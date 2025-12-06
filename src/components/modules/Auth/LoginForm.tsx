@@ -18,10 +18,12 @@ import {
 
 import { loginSchema, LoginSchema } from "@/lib/validation/loginSchama";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 
 export default function LoginFields() {
     const router = useRouter();
+    const { login } = useAuth();
 
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
@@ -33,39 +35,12 @@ export default function LoginFields() {
 
     const onSubmit = async (data: LoginSchema) => {
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:5000";
-            const res = await fetch(`${BACKEND_URL}/api/v1/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-
-            const json = await res.json();
-
-            if (!res.ok || !json.success) {
-                const message = json?.message || json?.error || "Login failed";
-                toast.error(message);
-                return;
-            }
-
-            try {
-                if (json?.data?.accessToken) {
-                    localStorage.setItem("accessToken", json.data.accessToken);
-                }
-                if (json?.data?.refreshToken) {
-                    localStorage.setItem("refreshToken", json.data.refreshToken);
-                }
-            } catch {
-                // ignore storage errors
-            }
-
-            toast.success(json.message || "Logged in successfully");
+            await login(data.email, data.password);
+            toast.success("Logged in successfully");
             router.push("/");
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
-            toast.error(message || "An unexpected error occurred");
+            toast.error(message || "Login failed");
         }
     };
 

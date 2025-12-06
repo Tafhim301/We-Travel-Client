@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Libertinus_Sans } from "next/font/google";
-import { Toaster } from "sonner";
+import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const libertinus = Libertinus_Sans({
   weight: ["400", "700"],
@@ -22,8 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${libertinus.variable} font-sans`}>
-        {children}
-        <Toaster position="top-right" richColors />
+     <AuthProvider>
+     <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+     </AuthProvider>
       </body>
     </html>
   );

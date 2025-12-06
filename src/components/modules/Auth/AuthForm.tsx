@@ -20,7 +20,7 @@ export default function AuthForm({
         <CardHeader> 
      <div className=" flex items-center flex-col">
             <div className="mb-5"><Logo /></div>
-        <h2 className="text-3xl font-bold  text-gray-900">{title}</h2>
+        <h2 className="text-3xl font-bold dark:text-gray-200 text-gray-900">{title}</h2>
         <p className="mt-2 text-gray-400 text-sm">{subtitle}</p>
       </div>
         </CardHeader>

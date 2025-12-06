@@ -4,7 +4,7 @@ import Logo from "@/components/shared/Logo";
 
 export default function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen flex w-full bg-white">
+    <div className="min-h-screen flex w-full">
       {/* Left Side (image + branding) */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900">
         <div className="absolute inset-0 bg-linear-to-b from-black/30 to-black/60 z-10" />
@@ -31,7 +31,7 @@ export default function AuthShell({ children }: { children: ReactNode }) {
       </div>
 
     
-      <div className="flex-1 flex items-center justify-center p-8 bg-gray-50 lg:bg-white">
+      <div className="flex-1 flex items-center justify-center p-8 ">
         {children}
       </div>
     </div>

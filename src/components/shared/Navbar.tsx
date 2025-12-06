@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X, Mountain, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, LogOut } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,12 +25,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Logo from "./Logo";
+import { useAuth } from "@/context/AuthContext";
+import { ModeToggle } from "../ui/ModeToggle";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // mock state
   const pathname = usePathname();
-
+  const router = useRouter();
+  const { user, authenticated, logout, loading } = useAuth();
 
   useEffect(() => {
     const handler = () => setIsScrolled(window.scrollY > 10);
@@ -45,18 +47,33 @@ export function Navbar() {
     { label: "About", href: "/about" },
   ];
 
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
+
+  // Get user initials for avatar fallback
+  const getInitials = (name?: string) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <nav
       className={cn(
         "fixed top-0 left-0 w-full z-50 transition-all duration-300",
-        isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm py-3" : "py-5"
+        isScrolled ? "bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm py-3" : "py-5"
       )}
     >
       <div className="max-w-7xl mx-auto px-5 flex items-center justify-between">
-        {/* LOGO */}
-      <Logo />
 
-        {/* DESKTOP NAV */}
+        <Logo />
+
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((item) => (
             <Link
@@ -76,13 +93,13 @@ export function Navbar() {
 
         {/* ACTIONS (DESKTOP) */}
         <div className="hidden md:flex items-center space-x-4">
-          {isLoggedIn ? (
+          {!loading && authenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 rounded-full h-9 w-9">
+                <Button variant="ghost" className="p-0 rounded-full h-9 w-9 cursor-pointer hover:opacity-80">
                   <Avatar>
-                    <AvatarImage src="/avatar.png" />
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src={user.profileImage?.url} alt={user.name} />
+                    <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -91,10 +108,10 @@ export function Navbar() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col">
                     <p className="text-sm font-medium leading-none">
-                      John Doe
+                      {user.name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      john@example.com
+                      {user.email}
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -105,14 +122,10 @@ export function Navbar() {
                   <Link href="/dashboard">Dashboard</Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem asChild>
-                  <Link href="/travel/create">Create Travel Plan</Link>
-                </DropdownMenuItem>
-
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={handleLogout}
                   className="text-red-600"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
@@ -130,10 +143,11 @@ export function Navbar() {
               </Button>
             </>
           )}
+          <ModeToggle />
         </div>
 
-        {/* MOBILE MENU */}
-        <div className="md:hidden">
+
+        <div className="md:hidden ">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -141,35 +155,47 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
 
-            <SheetContent side="left" className="p-0">
-              <SheetHeader className="p-4">
-                <SheetTitle className="flex items-center">
-                  <Mountain className="h-5 w-5 mr-2 text-primary" />
-                  Travel Buddy
+            <SheetContent side="left" className="p-0 dark:bg-slate-950">
+              <SheetHeader className="p-4 dark:border-slate-800">
+                <SheetTitle className="flex items-center absolute justify-between dark:text-white">
+        
+                    <Logo />
+                  <div className="relative left-30"><ModeToggle/></div>
+               
                 </SheetTitle>
               </SheetHeader>
 
-              {/* MOBILE LINKS */}
               <div className="px-4 py-4 space-y-2">
                 {navLinks.map((link) => (
                   <SheetClose asChild key={link.href}>
                     <Link
                       href={link.href}
-                      className="block text-base px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                      className="block text-base px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                     >
                       {link.label}
                     </Link>
                   </SheetClose>
                 ))}
 
-                <hr className="my-3" />
+                <hr className="my-3 dark:border-gray-700" />
 
-                {isLoggedIn ? (
+                {!loading && authenticated && user ? (
                   <>
+                    <div className="px-3 py-2 flex items-center gap-3 border dark:border-gray-700 rounded-md mb-3 dark:bg-slate-900">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.profileImage?.url} alt={user.name} />
+                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <p className="text-sm font-medium dark:text-white">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                      </div>
+                    </div>
+
                     <SheetClose asChild>
                       <Link
                         href="/dashboard"
-                        className="block px-3 py-2 text-base hover:bg-gray-100 rounded-md"
+                        className="block px-3 py-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                       >
                         Dashboard
                       </Link>
@@ -177,8 +203,8 @@ export function Navbar() {
 
                     <SheetClose asChild>
                       <button
-                        onClick={() => setIsLoggedIn(false)}
-                        className="w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                        onClick={handleLogout}
+                        className="w-full text-left px-3 py-2 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                       >
                         Log out
                       </button>
@@ -189,7 +215,7 @@ export function Navbar() {
                     <SheetClose asChild>
                       <Link
                         href="/auth/login"
-                        className="block px-3 py-2 text-base hover:bg-gray-100 rounded-md"
+                        className="block px-3 py-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                       >
                         Log in
                       </Link>
@@ -197,7 +223,7 @@ export function Navbar() {
                     <SheetClose asChild>
                       <Link
                         href="/auth/register"
-                        className="block px-3 py-2 text-base bg-primary text-white rounded-md"
+                        className="block px-3 py-2 text-base bg-primary text-white rounded-md dark:bg-primary dark:text-white"
                       >
                         Sign up
                       </Link>
@@ -205,6 +231,7 @@ export function Navbar() {
                   </>
                 )}
               </div>
+         
             </SheetContent>
           </Sheet>
         </div>
