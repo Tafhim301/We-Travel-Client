@@ -1,6 +1,6 @@
 
 import {
-  Mountain,
+ 
   Facebook,
   Twitter,
   Instagram,
@@ -11,7 +11,7 @@ import Logo from './Logo'
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 pt-16 pb-8">
+    <footer className="border-t border-gray-100 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
@@ -172,12 +172,12 @@ export function Footer() {
 
         <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Travel Buddy. All rights reserved.
+            &copy; {new Date().getFullYear()} We-Travel. All rights reserved.
           </p>
           <p className="text-gray-400 text-sm flex items-center">
             Made with{' '}
-            <Heart className="h-4 w-4 text-red-500 mx-1 fill-current" /> for
-            travelers
+            <Heart className="h-4 w-4 text-green-500 mx-1 fill-current" /> for
+            travelers and explorers
           </p>
         </div>
       </div>

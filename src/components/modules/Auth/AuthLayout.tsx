@@ -10,7 +10,7 @@ export default function AuthShell({ children }: { children: ReactNode }) {
         <div className="absolute inset-0 bg-linear-to-b from-black/30 to-black/60 z-10" />
 
         <Image
-          src="https://images.unsplash.com/photo-1686871804587-edba94d051b6?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000"
+          src="https://plus.unsplash.com/premium_photo-1677343210638-5d3ce6ddbf85?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Travel Nature"
           className="absolute inset-0 w-full h-full object-cover"
           height={800}

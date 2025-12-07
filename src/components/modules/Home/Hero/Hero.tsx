@@ -5,10 +5,12 @@ import Link from 'next/link'
 
 export default function Hero() {
   return (
-    <div>      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white dark:bg-slate-950">
-      {/* Background Elements */}
-      <div className="absolute top-0 right-0 -z-10 w-1/2 h-full bg-gradient-to-bl from-primary/10 dark:from-primary/5 to-transparent rounded-bl-[100px] opacity-60" />
-      <div className="absolute bottom-0 left-0 -z-10 w-1/3 h-1/2 bg-gradient-to-tr from-accent/10 dark:from-accent/5 to-transparent rounded-tr-[100px] opacity-60" />
+    <div>    
+       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden 
+    bg-linear-to-r from-primary/30 via-green-200  to-green-900/5 dark:from-primary-900 dark:via-blue-950 dark:to-slate-900">
+     
+      <div className="absolute top-0 right-0 -z-10 w-1/2 h-full bg-linear-to-bl from-primary/10 dark:from-primary/5 to-transparent rounded-bl-[100px] opacity-60" />
+      <div className="absolute bottom-0 left-0 -z-10 w-1/3 h-1/2 bg-linear-to-tr from-accent/10 dark:from-accent/5 to-transparent rounded-tr-[100px] opacity-60" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -20,7 +22,7 @@ export default function Hero() {
 
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-[1.1] tracking-tight">
               Find Your Perfect <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-accent">
                 Travel Companion
               </span>
             </h1>

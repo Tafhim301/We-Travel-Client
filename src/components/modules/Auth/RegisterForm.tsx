@@ -79,7 +79,7 @@ export default function RegisterForm() {
         },
     });
 
-    // Submit Handler
+
     const onSubmit = async (data: RegisterSchema) => {
         try {
             const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -118,7 +118,7 @@ export default function RegisterForm() {
             }
 
             toast.success(json.message || "Account created successfully");
-            router.push("/auth/login");
+            router.push("/");
         } catch (error: unknown) {
             const message =
                 error instanceof Error ? error.message : String(error);
@@ -126,7 +126,6 @@ export default function RegisterForm() {
         }
     };
 
-    // Handle image preview
     const handleImageChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         onChange: (file: File | undefined) => void

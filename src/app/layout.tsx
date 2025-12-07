@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Libertinus_Sans } from "next/font/google";
+import { Oswald } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Toaster } from "sonner";
 
-const libertinus = Libertinus_Sans({
+const oswald = Oswald({
   weight: ["400", "700"],
-  style : [ "italic"],
+  style : [ "normal"],
   subsets: ["latin"],
-  variable: "--font-libertinus",
+  variable: "--font-oswald",
 });
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${libertinus.variable} font-sans`}>
+      <body className={`${oswald.variable} font-sans`}>
      <AuthProvider>
      <ThemeProvider
             attribute="class"
@@ -31,6 +32,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster position="top-right" richColors/>
           </ThemeProvider>
      </AuthProvider>
       </body>

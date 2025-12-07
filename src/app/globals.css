@@ -8,7 +8,7 @@
   --color-foreground: var(--foreground);
 
   /* FONT */
-  --font-sans: var(--font-jakarta);
+  --font-sans: var(--font-oswald);
 
   /* BRAND COLORS */
   --color-primary: var(--primary);
