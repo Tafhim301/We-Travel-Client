@@ -40,14 +40,18 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Explore", href: "/explore" },
-    { label: "My Travel Plan", href: "/travel-plan" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-    { label: "Dashboard", href: "/dashboard" }
-  ];
+  const baseLinks = [
+  { label: "Home", href: "/" },
+  { label: "Explore", href: "/explore" },
+  { label: "My Travel Plan", href: "/travel-plan" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+const navLinks = authenticated && user
+  ? [...baseLinks, { label: "Dashboard", href: "/dashboard" }]
+  : baseLinks;
+
 
   const handleLogout = async () => {
     await logout();

@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/sidebar";
 
 import { useAuth } from "@/lib/context/AuthContext";
-import { SearchForm } from "@/components/search-form";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { getDashboardItems } from "@/lib/utils";
 
@@ -26,20 +25,22 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 import DashboardSkeleton from "./skeleton/dashboard/dashboardSkeleton";
 import { CompassIcon, ForwardIcon, Home } from "lucide-react";
+import { useEffect } from "react";
+import { Separator } from "./ui/separator";
 
 export function AppSidebar({ ...props }) {
   const router = useRouter();
   const { user, loading, logout } = useAuth();
-
-  if (loading) return <DashboardSkeleton />;
-
-  if (!user) {
+  
+  useEffect(() => {
+  if (!loading && !user) {
     toast.warning("Please login to access the dashboard");
     router.push("/auth/login");
-    return null;
   }
+}, [loading, user, router]);
+  if (loading) return <DashboardSkeleton />;
 
-  const sidebarData = getDashboardItems(user.role);
+  const sidebarData = getDashboardItems(user?.role as "ADMIN" | "USER");
 
   return (
     <Sidebar {...props}>
@@ -48,7 +49,9 @@ export function AppSidebar({ ...props }) {
           <Logo />
           <ModeToggle />
         </div>
-        <SearchForm />
+
+        <Separator />
+     
       </SidebarHeader>
 
       <SidebarContent className="space-y-4">
@@ -108,6 +111,7 @@ export function AppSidebar({ ...props }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
+
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
@@ -119,13 +123,16 @@ export function AppSidebar({ ...props }) {
                 
               </SidebarMenuItem>
 
+              
+              <Separator/>
+
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-accent rounded-md"
+                  className="flex items-center gap-3 px-3 py-2  rounded-md"
                 >
                   <Link href="/">
-          <Button variant="destructive" className="w-full" onClick={logout}>
+          <Button variant="destructive" className="w-full bg-red-600 hover:bg-red-700" onClick={logout}>
             Logout
           </Button>
       </Link>

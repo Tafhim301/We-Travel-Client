@@ -2,18 +2,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import { loginAction, registerAction, logoutAction } from "@/app/actions/auth";
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    ReactNode,
+} from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+    loginAction,
+    registerAction,
+    logoutAction,
+} from "@/app/actions/auth";
 
 interface User {
     _id: string;
     name: string;
     email: string;
     role: "USER" | "ADMIN";
-    profileImage?: {
-        url: string;
-    };
+    profileImage?: { url: string };
     currentLocation?: string;
 }
 
@@ -40,11 +48,23 @@ export const useAuth = () => {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const redirectUrl = searchParams.get("redirect");
 
     const [user, setUser] = useState<User | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const sanitizeRedirect = (url: string | null) => {
+        if (!url) return null;
+
+        // Prevent external redirects for security
+        if (url.startsWith("/") && !url.startsWith("//")) {
+            return url;
+        }
+        return null;
+    };
 
     const refreshUser = async () => {
         try {
@@ -76,15 +96,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (email: string, password: string) => {
         try {
-            // Call server action to handle login and set cookies
             const result = await loginAction(email, password);
 
             if (!result.success) {
                 return Promise.reject(result.message || "Login failed");
             }
 
-            // Refresh user data after successful login
             await refreshUser();
+
+            const safeRedirect = sanitizeRedirect(redirectUrl);
+
+            router.push(safeRedirect || "/dashboard");
+
             return result;
         } catch (error) {
             return Promise.reject(error);
@@ -93,11 +116,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const register = async (formData: FormData) => {
         try {
-            // Call server action to handle registration and set cookies
             const result = await registerAction(formData);
 
             if (!result.success) {
                 return Promise.reject(result.message || "Registration failed");
+            }
+
+            // After registration → redirect to login with redirect param preserved
+            const safeRedirect = sanitizeRedirect(redirectUrl);
+
+            if (safeRedirect) {
+                router.push(`/login?redirect=${safeRedirect}`);
+            } else {
+                router.push("/login");
             }
 
             return result;
@@ -108,15 +139,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logout = async () => {
         try {
-            // Call server action to clear cookies
             await logoutAction();
-        } catch (error) {
-            // Ignore logout errors
-        }
+        } catch (error) {}
 
         setUser(null);
         setAuthenticated(false);
-        router.push("/auth/login");
+        router.push("/");
     };
 
     return (
