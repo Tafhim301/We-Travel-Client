@@ -18,7 +18,7 @@ import {
 
 import { loginSchema, LoginSchema } from "@/lib/validation/loginSchama";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
 
 
 export default function LoginFields() {

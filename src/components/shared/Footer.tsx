@@ -170,15 +170,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-center items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
             &copy; {new Date().getFullYear()} We-Travel. All rights reserved.
           </p>
-          <p className="text-gray-400 text-sm flex items-center">
-            Made with{' '}
-            <Heart className="h-4 w-4 text-green-500 mx-1 fill-current" /> for
-            travelers and explorers
-          </p>
+          
         </div>
       </div>
     </footer>

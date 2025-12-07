@@ -1,7 +1,6 @@
 'use client'
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { ChevronDown } from 'lucide-react'
@@ -84,20 +83,7 @@ export default function FAQSection() {
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-6"
-          >
-            <p className="text-secondary-500 text-sm">
-              Still have questions? Reach out to our support team for personalized help.
-            </p>
-            <Button className="mt-4 bg-primary text-white hover:bg-primary-700 px-8 py-3 rounded-full shadow-lg shadow-primary/30">
-              Contact Support
-            </Button>
-          </motion.div>
+         
         </motion.div>
       </div>
     </section>

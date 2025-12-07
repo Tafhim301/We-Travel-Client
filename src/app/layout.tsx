@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Oswald } from "next/font/google";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider } from "@/lib/context/AuthContext";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "sonner";
 
+
 const oswald = Oswald({
   weight: ["400", "700"],
-  style : [ "normal"],
+  style: ["normal"],
   subsets: ["latin"],
   variable: "--font-oswald",
 });
@@ -24,17 +25,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${oswald.variable} font-sans`}>
-     <AuthProvider>
-     <ThemeProvider
+        <AuthProvider>
+         
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
             {children}
-            <Toaster position="top-right" richColors/>
+            <Toaster position="top-right" richColors />
           </ThemeProvider>
-     </AuthProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -8,13 +8,12 @@ import { MoveLeft, Home } from "lucide-react";
 export default function NotFound() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center p-6 bg-background text-foreground transition-colors duration-500">
-      {/* Decorative background element for elegance */}
+    
       <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-slate-950 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] bg-size-[24px_24px]"></div>
 
       <Card className="relative w-full max-w-2xl p-1 bg-linear-to-b from-border/50 to-border/10 border-none shadow-2xl overflow-hidden">
         <div className="bg-card p-8 md:p-16 rounded-[inherit] flex flex-col items-center text-center">
           
-          {/* Subtle rich text badge */}
           <span className="px-3 py-1 text-xs font-semibold tracking-widest uppercase text-primary bg-primary/10 rounded-full mb-6">
             Error 404
           </span>

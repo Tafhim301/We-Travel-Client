@@ -10,7 +10,7 @@ interface User {
     _id: string;
     name: string;
     email: string;
-    role: string;
+    role: "USER" | "ADMIN";
     profileImage?: {
         url: string;
     };

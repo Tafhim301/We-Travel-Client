@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, User } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Logo from "./Logo";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
 import { ModeToggle } from "../ui/ModeToggle";
 
 export function Navbar() {
@@ -43,8 +43,10 @@ export function Navbar() {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Explore", href: "/explore" },
-    { label: "How it Works", href: "/how-it-works" },
+    { label: "My Travel Plan", href: "/travel-plan" },
     { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+    { label: "Dashboard", href: "/dashboard" }
   ];
 
   const handleLogout = async () => {
@@ -119,7 +121,7 @@ export function Navbar() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard/profile"><User className="h-4 w-4 mr-2" />View Profile</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -158,10 +160,10 @@ export function Navbar() {
             <SheetContent side="left" className="p-0 dark:bg-slate-950">
               <SheetHeader className="p-4 dark:border-slate-800">
                 <SheetTitle className="flex items-center absolute justify-between dark:text-white">
-        
-                    <Logo />
-                  <div className="relative left-30"><ModeToggle/></div>
-               
+
+                  <Logo />
+                  <div className="relative left-30"><ModeToggle /></div>
+
                 </SheetTitle>
               </SheetHeader>
 
@@ -231,7 +233,7 @@ export function Navbar() {
                   </>
                 )}
               </div>
-         
+
             </SheetContent>
           </Sheet>
         </div>
