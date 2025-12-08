@@ -49,7 +49,7 @@ export async function proxy(request: NextRequest) {
     try {
       const decoded = jwt.verify(
         accessToken,
-        process.env.JWT_SECRET!
+        process.env.JWT_ACCESS_SECRET!
       ) as JwtPayload;
 
       role = decoded?.role as UserRole;

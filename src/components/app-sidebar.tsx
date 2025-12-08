@@ -23,7 +23,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import DashboardSkeleton from "./skeleton/dashboard/dashboardSkeleton";
 import { CompassIcon, ForwardIcon, Home } from "lucide-react";
 import { useEffect } from "react";
 import { Separator } from "./ui/separator";
@@ -38,8 +37,7 @@ export function AppSidebar({ ...props }) {
     router.push("/auth/login");
   }
 }, [loading, user, router]);
-  if (loading) return <DashboardSkeleton />;
-
+ 
   const sidebarData = getDashboardItems(user?.role as "ADMIN" | "USER");
 
   return (
@@ -105,7 +103,7 @@ export function AppSidebar({ ...props }) {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-primary rounded-md"
+                  className="flex items-center gap-3 px-3 py-2 hover:bg-primary hover:text-accent-foreground rounded-md"
                 >
                   <Link href="/"><Home className="h-4 w-4" />Home</Link>
                 </SidebarMenuButton>
@@ -115,7 +113,7 @@ export function AppSidebar({ ...props }) {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-primary rounded-md"
+                  className="flex items-center gap-3 px-3 py-2 hover:bg-primary hover:text-accent-foreground rounded-md"
                 >
                   <Link href="/explore"><CompassIcon className="h-4 w-4" />Explore</Link>
                 </SidebarMenuButton>

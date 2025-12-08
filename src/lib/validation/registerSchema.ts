@@ -1,7 +1,6 @@
-import { z } from "zod";
-
+import z from "zod";
 export const registerSchema = z.object({
-   name: z
+  name: z
     .string()
     .min(2, { message: "Name is too short" })
     .max(50, { message: "Name is too long" }),
@@ -29,7 +28,7 @@ export const registerSchema = z.object({
 
   currentLocation: z.string().optional(),
 
-  confirmPassword: z.string(),    
+  confirmPassword: z.string(),
 
   image: z.any().optional(),
 }).refine((data) => data.password === data.confirmPassword, {

@@ -84,7 +84,7 @@ export const UserSidebarItems = [
     icon: Globe,
     items: [
       { title: "Create Travel Plan", url: "/dashboard/create-travel-plan", icon: CalendarPlus },
-      { title: "Your Travel Plans", url: "/dashboard/your-travel-plans", icon: CalendarRange },
+      { title: "My Travel Plans", url: "/dashboard/my-travel-plans", icon: CalendarRange },
       { title: "Requested Plans", url: "/dashboard/requested-travel-plans", icon: CalendarClock },
     ],
   },
