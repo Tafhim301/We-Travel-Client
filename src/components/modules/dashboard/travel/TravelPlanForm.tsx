@@ -29,7 +29,22 @@ import { toast } from "sonner";
 import { TravelPlanFormSkeleton } from "@/components/skeleton/TravelPlanFormSkeleton";
 import Image from "next/image";
 
-export default function CreateTravelPlanForm() {
+export default function CreateTravelPlanForm({
+  mode = "CREATE",
+  planId,
+  initialData,
+}: {
+  mode?: "CREATE" | "UPDATE";
+  planId?: string;
+  initialData?: any;
+}) {
+
+  const url =
+  mode === "UPDATE"
+    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/travelPlans/${planId}`
+    : `${process.env.NEXT_PUBLIC_BACKEND_URL}/travelPlans`;
+
+  const method = mode === "UPDATE" ? "PATCH" : "POST";
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -50,7 +65,22 @@ export default function CreateTravelPlanForm() {
   const form = useForm<TravelPlanFormValues>({
     resolver: zodResolver(createTravelPlanFormSchema),
     mode: "onSubmit",
-    defaultValues: {
+  defaultValues: initialData
+  ? {
+      title: initialData.title,
+      description: initialData.description,
+      itinerary: initialData.itinerary,
+      destination: initialData.destination,
+      travelType: initialData.travelType,
+      startDate: new Date(initialData.startDate),
+      endDate: new Date(initialData.endDate),
+      maxMembers: initialData.maxMembers,
+      budgetRange: initialData.budgetRange,
+      image : undefined,
+      demoImages: undefined
+    }
+  :
+     { 
       title: "",
       description: "",
       itinerary: "",
@@ -64,7 +94,34 @@ export default function CreateTravelPlanForm() {
       maxMembers: 10,
       budgetRange: { min: 0, max: 0 },
     },
+
   });
+
+  const hydrateLocationForUpdate = async (destinationId: string) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/location/destination/${destinationId}`
+  );
+
+  if (!res.ok) return;
+
+  const { continent, country, city } = (await res.json()).data;
+
+  form.setValue("continent", continent);
+  form.setValue("country", country);
+  form.setValue("city", city);
+  form.setValue("destination", destinationId);
+
+
+  const countries = await fetchLocationData("/countries", `?continent=${continent}`);
+  setCountries(countries);
+
+  const cities = await fetchLocationData("/cities", `?country=${country}`);
+  setCities(cities);
+
+  const destinations = await fetchLocationData("/destinations", `?city=${city}`);
+  setDestinations(destinations);
+};
+
 
 
   const fetchLocationData = async (endpoint: string, query: string = "") => {
@@ -89,6 +146,28 @@ export default function CreateTravelPlanForm() {
     };
     loadContinents();
   }, []);
+
+  useEffect(() => {
+  if (!initialData) return;
+
+  if (initialData.image) {
+    setMainImagePreview(initialData.image);
+  }
+
+
+  if (initialData.demoImages?.length) {
+    setDemoImagesPreview(initialData.demoImages);
+  }
+}, [initialData]);
+
+useEffect(() => {
+  if (mode === "UPDATE" && initialData?.destination) {
+    hydrateLocationForUpdate(initialData.destination);
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [mode, initialData]);
+
+
 
   const handleContinentChange = async (continent: string) => {
     form.setValue("continent", continent);
@@ -117,9 +196,7 @@ export default function CreateTravelPlanForm() {
     const data = await fetchLocationData("/destinations", `?city=${city}`);
     setDestinations(data);
   };
-  // --- End Fetch Logic ---
 
-  // Image Handlers
   const handleMainImageChange = (files: FileList | null) => {
     if (files && files[0]) {
       const reader = new FileReader();
@@ -136,9 +213,7 @@ export default function CreateTravelPlanForm() {
     const dataTransfer = new DataTransfer();
     if (existingFiles) Array.from(existingFiles as FileList).forEach(file => dataTransfer.items.add(file));
     Array.from(files).forEach(file => dataTransfer.items.add(file));
-    form.setValue("demoImages", dataTransfer.files); // No need to trigger validation manually usually
-
-    // Previews
+    form.setValue("demoImages", dataTransfer.files);
     const readers = Array.from(files).map(file => new Promise<string>((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result as string);
@@ -149,7 +224,7 @@ export default function CreateTravelPlanForm() {
 
   const removeMainImage = () => {
     setMainImagePreview(null);
-    form.setValue("image", undefined); // This will trigger "Required" error on submit
+    form.setValue("image", undefined); 
   };
 
   const removeDemoImage = (index: number) => {
@@ -164,7 +239,7 @@ export default function CreateTravelPlanForm() {
     }
   };
 
-  // --- SUBMIT HANDLER ---
+  
   const onSubmit = async (values: TravelPlanFormValues) => {
     setIsSubmitting(true);
     try {
@@ -197,23 +272,22 @@ export default function CreateTravelPlanForm() {
         );
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/travelPlans/`, {
-        method: "POST",
+      const res = await fetch(url, {
+        method: method,
         credentials: "include",
         body: formData,
       });
 
       const data = await res.json();
 
-      // --- BACKEND ERROR HANDLING ---
-      // If the Backend returns that JSON array you saw, we catch it here
+   
       if (!res.ok) {
-        // Check if data is the array of errors
+    
         const errors = Array.isArray(data) ? data : data.errorSources || data.issues;
         
         if (errors && Array.isArray(errors)) {
           errors.forEach((err: any) => {
-            // Map backend error path (e.g. ["title"]) to form field
+          
             const path = err.path.join("."); 
             form.setError(path as any, { message: err.message });
           });
