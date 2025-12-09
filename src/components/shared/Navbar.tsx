@@ -59,16 +59,6 @@ const navLinks = authenticated && user
     router.push("/");
   };
 
-  
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   if(loading) return ( <NavbarSkeleton />)
 
@@ -109,7 +99,7 @@ const navLinks = authenticated && user
                 <Button variant="ghost" className="p-0 rounded-full h-9 w-9 cursor-pointer hover:opacity-80">
                   <Avatar>
                     <AvatarImage src={user.profileImage?.url} alt={user.name} />
-                    <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                    <AvatarFallback>{<User className="h-8 bg-accent-foreground  w-8 rounded-full"></User>}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -196,7 +186,7 @@ const navLinks = authenticated && user
                     <div className="px-3 py-2 flex items-center gap-3 border dark:border-gray-700 rounded-md mb-3 dark:bg-slate-900">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={user.profileImage?.url} alt={user.name} />
-                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                        <AvatarFallback>{<User className="h-8 bg-accent-foreground w-8 rounded-full"></User>}</AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
                         <p className="text-sm font-medium dark:text-white">{user.name}</p>

@@ -16,10 +16,14 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Pencil, Trash2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { RequestsDrawer } from "./RequestDrawer";
 
 export default function MyTravelPlansTable() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -41,6 +45,8 @@ export default function MyTravelPlansTable() {
 
     fetchData();
   }, []);
+
+  console.log(data)
 
   const handleRestrictedAction = () => {
     toast.warning("You can't modify this plan while members have requested it");
@@ -104,8 +110,18 @@ export default function MyTravelPlansTable() {
 
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{plan.requestedBy?.length || 0}</span>
+                   <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setActivePlanId(plan._id);
+                          setOpenDrawer(true);
+                        }}
+                      >
+                        <Users className="h-4 w-4 mr-1" />
+                        {plan.requestedBy?.length || 0}
+                    </Button>
+
                   </div>
                 </TableCell>
 
@@ -155,6 +171,15 @@ export default function MyTravelPlansTable() {
           })}
         </TableBody>
       </Table>
+
+      {activePlanId && (
+  <RequestsDrawer
+    open={openDrawer}
+    onOpenChange={setOpenDrawer}
+    planId={activePlanId}
+  />
+)}
+
 
       {data.length === 0 && (
         <div className="p-6 text-center text-muted-foreground">
