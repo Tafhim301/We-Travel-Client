@@ -35,9 +35,10 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="bg-gray-50 dark:bg-slate-900 py-20 lg:py-32">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* FAQ Image */}
+   <section className="bg-gray-50 dark:bg-slate-900 py-20 lg:py-32 max-w-7xl mx-auto px-6 overflow-x-hidden">
+
+      <div className="lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+   
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -54,7 +55,7 @@ export default function FAQSection() {
           <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
         </motion.div>
 
-        {/* FAQ Content */}
+
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}

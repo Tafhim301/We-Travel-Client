@@ -27,6 +27,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Logo from "./Logo";
 import { useAuth } from "@/lib/context/AuthContext";
 import { ModeToggle } from "../ui/ModeToggle";
+import { Separator } from "../ui/separator";
+import { NavbarSkeleton } from "../skeleton/NavbarSkeleton";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -43,13 +45,12 @@ export function Navbar() {
   const baseLinks = [
   { label: "Home", href: "/" },
   { label: "Explore", href: "/explore" },
-  { label: "My Travel Plan", href: "/travel-plan" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
-const navLinks = authenticated && user
-  ? [...baseLinks, { label: "Dashboard", href: "/dashboard" }]
+const navLinks = authenticated && user 
+  ? [...baseLinks, { label: "Dashboard", href: "/dashboard" },{ label: "My Travel Plan", href: "dashboard/my-travel-plans" },]
   : baseLinks;
 
 
@@ -58,7 +59,7 @@ const navLinks = authenticated && user
     router.push("/");
   };
 
-  // Get user initials for avatar fallback
+  
   const getInitials = (name?: string) => {
     if (!name) return "U";
     return name
@@ -68,6 +69,9 @@ const navLinks = authenticated && user
       .toUpperCase()
       .slice(0, 2);
   };
+
+  if(loading) return ( <NavbarSkeleton />)
+
 
   return (
     <nav
@@ -80,7 +84,7 @@ const navLinks = authenticated && user
 
         <Logo />
 
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden lg:flex items-center space-x-8">
           {navLinks.map((item) => (
             <Link
               key={item.href}
@@ -98,7 +102,7 @@ const navLinks = authenticated && user
         </div>
 
         {/* ACTIONS (DESKTOP) */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden lg:flex items-center space-x-4">
           {!loading && authenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -153,7 +157,7 @@ const navLinks = authenticated && user
         </div>
 
 
-        <div className="md:hidden ">
+        <div className="lg:hidden ">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -163,13 +167,15 @@ const navLinks = authenticated && user
 
             <SheetContent side="left" className="p-0 dark:bg-slate-950">
               <SheetHeader className="p-4 dark:border-slate-800">
-                <SheetTitle className="flex items-center absolute justify-between dark:text-white">
+                <SheetTitle className="flex items-center justify-around dark:text-white">
 
                   <Logo />
-                  <div className="relative left-30"><ModeToggle /></div>
+                  <div className=""><ModeToggle /></div>
 
                 </SheetTitle>
+              <Separator className="w-2 text-gray-500"/>
               </SheetHeader>
+
 
               <div className="px-4 py-4 space-y-2">
                 {navLinks.map((link) => (

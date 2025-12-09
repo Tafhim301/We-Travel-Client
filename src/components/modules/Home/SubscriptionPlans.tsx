@@ -1,15 +1,15 @@
 "use client";
-import { ArrowRight, WandSparkles } from "lucide-react";
+import { ArrowRight, } from "lucide-react";
 import Link from "next/link";
 
 export default function SubscriptionCTA() {
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div className="bg-gradient-to-r from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/15 p-12 sm:p-16 rounded-3xl text-center border border-primary/25 shadow-2xl">
+            <div className="bg-linear-to-r from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/15 p-12 sm:p-16 rounded-3xl text-center border border-primary/25 shadow-2xl">
                 
                 {/* Heading */}
                 <h3 className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white mb-6 flex items-center justify-center gap-3">
-                    Ready to Unlock Exclusive Travel Perks? <WandSparkles className="text-yellow-400 animate-pulse" />
+                    Ready to Unlock Exclusive Travel Perks?
                 </h3>
 
                 {/* Description */}
