@@ -47,6 +47,7 @@ export function Navbar() {
   { label: "Explore", href: "/explore" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
+  { label: "Subscription", href: "/subscriptions" },
 ];
 
 const navLinks = authenticated && user 

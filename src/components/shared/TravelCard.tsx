@@ -2,56 +2,92 @@
 'use client'
 
 import Image from 'next/image'
-import { MapPin, Calendar } from 'lucide-react'
+import Link from 'next/link'
+import { MapPin, Star,  UserPlus, Users } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { Badge } from '../ui/badge'
 
+export function TravelCard({ plan, currentUser }: any) {
+  const isHost = currentUser?._id === plan.user._id
+  const isRated = plan.user.totalReviewsReceived > 0
 
-interface TravelCardProps {
-  plan: any
-  onClick?: () => void
-}
+  const handleJoin = async () => {
+    if (!currentUser) {
+      toast.warning('Login required')
+      return
+    }
 
-export function TravelCard({ plan, onClick }: TravelCardProps) {
-  const location = `${plan.destination.city}, ${plan.destination.country}`
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/travelRequests`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            travelPlan: plan._id,
+            message: 'Excited to join!',
+          }),
+        }
+      )
+
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.message)
+
+      toast.success('Request sent successfully')
+    } catch (err: any) {
+      toast.error(err.message || 'Request failed')
+    }
+  }
 
   return (
-    <div
-      onClick={onClick}
-      className="group cursor-pointer rounded-xl overflow-hidden bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all"
-    >
-      {/* Image */}
-      <div className="relative h-48 w-full">
-        <Image
-          src={plan.image}
-          alt={plan.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+    <div className="rounded-xl overflow-hidden bg-white dark:bg-slate-900 border hover:shadow-lg transition">
+      <div className="relative h-48">
+        <Image src={plan.image} alt={plan.title} fill className="object-cover" />
       </div>
 
-      {/* Content */}
       <div className="p-4 space-y-3">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
-          {plan.title}
-        </h3>
+        <h3 className="font-semibold text-lg">{plan.title}</h3>
+        <p className="text-sm text-gray-600 line-clamp-2">{plan.description}</p>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-          {plan.description}
-        </p>
+        {/* Preview */}
+      <div className='flex items-center justify-between'>
+         <Link href={plan.user._id}>
+        <div className="text-xs text-gray-500 flex items-center gap-1 ">
+         <Image height={10} width={10} className='h-10 w-10 rounded-full border-2 border-primary'  src={plan?.user?.profileImage?.url} alt='profile Image' /> Hosted By: {plan.user.name} ·{' '}
+          {isRated ? (
+            <span className="inline-flex items-center gap-1">
+              <Star className="h-3 w-3 text-yellow-500" />
+              {plan.user.averageRating.toFixed(1)}
+            </span>
+          ) : (
+            'Not rated yet'
+          )}
+        </div></Link>
+         <div className='flex items-center justify-center text-shadow-gray-500'>
+         <Badge variant={"outline"} className=''>  <Users className="w-4 h-4 text-shadow-gray-500"></Users> <p className='text-sm text-shadow-gray-500'>{plan?.approvedMembers?.length}/{plan.maxMembers}</p></Badge>
+         </div>
+      </div>
 
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center text-sm gap-2 mt-3 ml-2">
           <MapPin className="h-4 w-4" />
-          <span>{location}</span>
+          {plan.destination.city}, {plan.destination.country}, {plan.destination.destination}
         </div>
 
-        <div className="flex items-center justify-between pt-2">
-          <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
-            {plan.travelType}
-          </span>
+        <div className="flex justify-between pt-2">
+          <Link href={`/travel/${plan._id}`}>
+            <Button size="sm" variant="outline">
+              View Details
+            </Button>
+          </Link>
 
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-            <Calendar className="h-4 w-4" />
-            {new Date(plan.startDate).toLocaleDateString()}
-          </div>
+          {!isHost && (
+            <Button size="sm" onClick={handleJoin}>
+              <UserPlus className="h-4 w-4 mr-1" />
+              Join
+            </Button>
+          )}
         </div>
       </div>
     </div>

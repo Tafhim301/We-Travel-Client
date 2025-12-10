@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 type DashboardData = {
   user: {
     name: string;
@@ -312,7 +313,7 @@ export default function Overview() {
                           <span>Usage</span>
                           
 
-                          <span>{user.subscription.isPremium ? "N/A" : Math.round(subProgress)}%</span>
+                          <span>{user.subscription.isPremium ?Math.round(subProgress)  : "N/A" }%</span>
                        </div>
                        <Progress value={subProgress} className="h-2" />
                     </div>
@@ -336,7 +337,7 @@ export default function Overview() {
                  </div>
               </CardContent>
               <CardFooter className="border-t bg-muted/20 p-4">
-                 <Button variant="default" className="w-full">Manage Subscription</Button>
+               <Link href={"/subscriptions"}>  <Button variant="default" className="w-full">Manage Subscription</Button></Link>
               </CardFooter>
            </Card>
 
