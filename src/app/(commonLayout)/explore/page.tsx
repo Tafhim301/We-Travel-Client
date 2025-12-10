@@ -92,7 +92,7 @@ export default function Explore() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
-                placeholder="Search destination or title..."
+                placeholder="Search by title..."
                 className="w-full pl-9 py-2 rounded-lg border bg-transparent"
                 value={searchTerm}
                 onChange={(e) => {
@@ -122,7 +122,7 @@ export default function Explore() {
               ))}
             </div>
 
-            {/* Sorting */}
+  
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
@@ -184,7 +184,6 @@ export default function Explore() {
   )
 }
 
-/* ---------- Skeleton ---------- */
 function ExploreSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -3,10 +3,18 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Star,  UserPlus, Users } from 'lucide-react'
+import {
+  MapPin,
+  Star,
+  UserPlus,
+  Users,
+  Calendar,
+  ArrowRight,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { Badge } from '../ui/badge'
+import { format } from 'date-fns'
 
 export function TravelCard({ plan, currentUser }: any) {
   const isHost = currentUser?._id === plan.user._id
@@ -41,54 +49,105 @@ export function TravelCard({ plan, currentUser }: any) {
     }
   }
 
+
   return (
-    <div className="rounded-xl overflow-hidden bg-white dark:bg-slate-900 border hover:shadow-lg transition">
-      <div className="relative h-48">
-        <Image src={plan.image} alt={plan.title} fill className="object-cover" />
+    <div className="group rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border hover:shadow-xl transition-all duration-300 flex flex-col">
+    
+      <div className="relative h-52 overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent z-10" />
+        <Image
+          src={plan.image}
+          alt={plan.title}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+
+        <Badge className="absolute top-4 right-4 z-20 backdrop-blur bg-white/20 border border-white/30 text-white">
+          {plan.travelType}
+        </Badge>
+
+        <div className="absolute bottom-4 left-4 z-20 text-white">
+          <div className="flex items-center text-sm font-medium">
+            <MapPin className="h-4 w-4 mr-1" />
+            {plan.destination.city}, {plan.destination.country}
+          </div>
+        </div>
       </div>
 
-      <div className="p-4 space-y-3">
-        <h3 className="font-semibold text-lg">{plan.title}</h3>
-        <p className="text-sm text-gray-600 line-clamp-2">{plan.description}</p>
+      {/* Content */}
+      <div className="p-5 flex-1 flex flex-col">
+        <h3 className="text-xl font-bold mb-1 line-clamp-1 group-hover:text-primary transition">
+          {plan.title}
+        </h3>
 
-        {/* Preview */}
-      <div className='flex items-center justify-between'>
-         <Link href={plan.user._id}>
-        <div className="text-xs text-gray-500 flex items-center gap-1 ">
-         <Image height={10} width={10} className='h-10 w-10 rounded-full border-2 border-primary'  src={plan?.user?.profileImage?.url} alt='profile Image' /> Hosted By: {plan.user.name} ·{' '}
-          {isRated ? (
-            <span className="inline-flex items-center gap-1">
-              <Star className="h-3 w-3 text-yellow-500" />
-              {plan.user.averageRating.toFixed(1)}
-            </span>
-          ) : (
-            'Not rated yet'
-          )}
-        </div></Link>
-         <div className='flex items-center justify-center text-shadow-gray-500'>
-         <Badge variant={"outline"} className=''>  <Users className="w-4 h-4 text-shadow-gray-500"></Users> <p className='text-sm text-shadow-gray-500'>{plan?.approvedMembers?.length}/{plan.maxMembers}</p></Badge>
-         </div>
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+          {plan.description}
+        </p>
+
+        {/* Date */}
+        <div className="flex items-center text-sm text-muted-foreground mb-2">
+          <Calendar className="h-4 w-4 mr-2" />
+          {format(new Date(plan.startDate), 'PPP')} —{' '}
+          {format(new Date(plan.endDate), 'PPP')}
+        </div>
+
+    
+        <div className="flex justify-between items-center text-sm font-medium mb-4">
+          <div>
+            ৳{plan.budgetRange.min.toLocaleString()} — ৳
+            {plan.budgetRange.max.toLocaleString()}
+          </div>
+
+      <Badge variant={"outline"}>
+        <div className="flex items-center gap-1 text-muted-foreground">
+            <Users className="h-4 w-4" />
+            {plan.approvedMembers.length}/{plan.maxMembers}
+          </div>
+      </Badge>
+        </div>
+
+    
+        <Link
+          href={`/profile/${plan.user._id}`}
+          className="flex items-center gap-3 pt-4 border-t mt-auto"
+        >
+          <Image
+            src={plan.user.profileImage?.url}
+            alt={"Profile Image"}
+            width={36}
+            height={36}
+            className="h-9 w-9 rounded-full border-2 border-primary object-cover"
+          />
+          <div className="flex-1">
+            <p className="text-xs text-muted-foreground">Hosted by</p>
+            <p className="text-sm font-medium leading-none flex items-center gap-1">
+              {plan.user.name}
+              {isRated && (
+                <span className="flex items-center text-xs text-yellow-500 ml-1">
+                  <Star className="h-3 w-3 mr-0.5" />
+                  {plan.user.averageRating.toFixed(1)}
+                </span>
+              )}
+            </p>
+          </div>
+        </Link>
       </div>
 
-        <div className="flex items-center text-sm gap-2 mt-3 ml-2">
-          <MapPin className="h-4 w-4" />
-          {plan.destination.city}, {plan.destination.country}, {plan.destination.destination}
-        </div>
+      {/* Actions */}
+      <div className="p-5 pt-0 flex gap-2">
+        <Link href={`/travel/${plan._id}`} className="flex-1">
+          <Button variant="outline" className="w-full">
+            View Details
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </Link>
 
-        <div className="flex justify-between pt-2">
-          <Link href={`/travel/${plan._id}`}>
-            <Button size="sm" variant="outline">
-              View Details
-            </Button>
-          </Link>
-
-          {!isHost && (
-            <Button size="sm" onClick={handleJoin}>
-              <UserPlus className="h-4 w-4 mr-1" />
-              Join
-            </Button>
-          )}
-        </div>
+        {!isHost && (
+          <Button onClick={handleJoin}>
+            <UserPlus className="h-4 w-4 mr-1" />
+            Join
+          </Button>
+        )}
       </div>
     </div>
   )

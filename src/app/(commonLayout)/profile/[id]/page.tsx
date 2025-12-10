@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { TravelCard } from "@/components/shared/TravelCard";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 import ProfileStat from "@/components/ui/profileStat";
+import { useAuth } from "@/lib/context/AuthContext";
 
 interface IUserProfile {
   user: any;
@@ -29,6 +30,7 @@ export default function PublicProfilePage() {
       .then(res => setData(res.data))
       .finally(() => setLoading(false));
   }, [id]);
+  const {user : currentUser} = useAuth()
 
   if (loading) return <ProfileSkeleton />;
   if (!data) return null;
@@ -36,6 +38,7 @@ export default function PublicProfilePage() {
   const { user, travelPlans } = data;
   const isPremium = user?.subscription?.isPremium;
 
+  
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 space-y-10 mt-30">
      
@@ -110,7 +113,7 @@ export default function PublicProfilePage() {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {travelPlans.map(plan => (
-              <TravelCard key={plan._id} plan={plan} />
+              <TravelCard key={plan._id} plan={plan} currentUser={currentUser}/>
             ))}
           </div>
         )}
