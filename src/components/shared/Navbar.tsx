@@ -36,6 +36,8 @@ export function Navbar() {
   const router = useRouter();
   const { user, authenticated, logout, loading } = useAuth();
 
+  console.log(user)
+
   useEffect(() => {
     const handler = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handler);
@@ -48,10 +50,17 @@ export function Navbar() {
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
   { label: "Subscription", href: "/subscriptions" },
+  
 ];
 
 const navLinks = authenticated && user 
-  ? [...baseLinks, { label: "Dashboard", href: "/dashboard" },{ label: "My Travel Plan", href: "dashboard/my-travel-plans" },]
+  ? user.role === "ADMIN" ? 
+  [...baseLinks, { label: "AdminDashboard", href: "/dashboard/admin/overview" }] :
+  [...baseLinks, 
+  { label: "Profile", href: "/dashboard/profile" },
+  { label: "My Travel Plan", href: "dashboard/my-travel-plans" },
+
+]
   : baseLinks;
 
 
@@ -100,7 +109,7 @@ const navLinks = authenticated && user
                 <Button variant="ghost" className="p-0 rounded-full h-9 w-9 cursor-pointer hover:opacity-80">
                   <Avatar>
                     <AvatarImage src={user.profileImage?.url} alt={user.name} />
-                    <AvatarFallback>{<User className="h-8 bg-accent-foreground  w-8 rounded-full"></User>}</AvatarFallback>
+                    <AvatarFallback>{<User></User>}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>

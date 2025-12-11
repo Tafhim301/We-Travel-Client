@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    console.log(user)
+
 
     const sanitizeRedirect = (url: string | null) => {
         if (!url) return null;

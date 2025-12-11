@@ -23,7 +23,7 @@ export default function MyTravelPlansTable() {
   const [data, setData] = useState<any[]>([]);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
-
+  console.log(data)
 
   const router = useRouter();
 
@@ -93,7 +93,7 @@ export default function MyTravelPlansTable() {
                   {index + 1}
                 </TableCell>
                 <TableCell className="font-medium w">
-                  <Image className="rounded-md" width={50} height={50} src={plan.image} alt="" />
+                  <Image className="rounded-md h-8 w-12" width={50} height={50} src={plan.image} alt="" />
                 </TableCell>
                 <TableCell className="font-medium">
                   {plan.title}
@@ -133,7 +133,7 @@ export default function MyTravelPlansTable() {
                   <div className="flex justify-end gap-2">
                     {/* View */}
                     <Button
-                      size="icon"
+                 
                       variant="outline"
                       onClick={() =>
                         router.push(`/travel-plans/${plan._id}`)
@@ -143,7 +143,6 @@ export default function MyTravelPlansTable() {
                       View Details
                     </Button>
 
-                    {/* Edit */}
                
 
                  
@@ -155,13 +154,13 @@ export default function MyTravelPlansTable() {
         </TableBody>
       </Table>
 
-      {activePlanId && (
-  <RequestsDrawer
-    open={openDrawer}
-    onOpenChange={setOpenDrawer}
-    planId={activePlanId}
-  />
-)}
+          {activePlanId && (
+      <RequestsDrawer
+        open={openDrawer}
+        onOpenChange={setOpenDrawer}
+        planId={activePlanId}
+      />
+    )}
 
 
       {data.length === 0 && (

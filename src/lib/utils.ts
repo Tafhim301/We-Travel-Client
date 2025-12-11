@@ -4,7 +4,6 @@ import { twMerge } from 'tailwind-merge'
 import {
   LayoutDashboard,
   Users,
-  PlaneTakeoff,
   Globe,
 
   UserRound,
@@ -51,9 +50,9 @@ export const AdminSidebarItems = [
     section: "Dashboard",
     icon: LayoutDashboard,
     items: [
-      { title: "Overview", url: "/dashboard/admin", icon: LayoutDashboard },
+      { title: "Overview", url: "/dashboard/admin/overview", icon: LayoutDashboard },
       { title: "Manage Users", url: "/dashboard/admin/users", icon: Users },
-      { title: "Manage Tours", url: "/dashboard/admin/tours", icon: PlaneTakeoff },
+    
     ],
   },
 

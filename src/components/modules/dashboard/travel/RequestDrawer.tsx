@@ -28,7 +28,10 @@ export function RequestsDrawer({
 }: RequestsDrawerProps) {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  console.log(requests)
 
+  console.log(requests)
+  
   useEffect(() => {
     if (!open) return;
 
@@ -36,7 +39,7 @@ export function RequestsDrawer({
       setLoading(true);
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-requests?travelPlan=${planId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-requests/?travelPlan=${planId}`,
           { credentials: "include" }
         );
         const json = await res.json();
@@ -138,7 +141,7 @@ export function RequestsDrawer({
                         </Button>
                         <Button
                           size="sm"
-                          variant="destructive"
+                          className="bg-red-700 hover:bg-red-800 hover:cursor-pointer text-accent-foreground"
                           onClick={() => updateStatus(req._id, "reject")}
                         >
                           Reject

@@ -56,7 +56,7 @@ export function AppSidebar({ ...props }) {
         {sidebarData.map((section: any, index: number) => (
           <div key={section.section}>
 
-            {index !== 0 && <div className="border-b my-2 opacity-30" />}
+            {index !== 0 && <div className="border-b  opacity-30" />}
 
             <SidebarGroup>
               <SidebarGroupLabel className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
