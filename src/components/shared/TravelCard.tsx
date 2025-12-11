@@ -28,7 +28,7 @@ export function TravelCard({ plan, currentUser }: any) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/travelRequests`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-requests/`,
         {
           method: 'POST',
           credentials: 'include',
@@ -143,7 +143,7 @@ export function TravelCard({ plan, currentUser }: any) {
         </Link>
 
         {!isHost && (
-          <Button onClick={handleJoin}>
+          <Button className='hover:cursor-pointer' onClick={handleJoin}>
             <UserPlus className="h-4 w-4 mr-1" />
             Join
           </Button>

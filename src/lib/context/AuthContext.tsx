@@ -124,13 +124,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return Promise.reject(result.message || "Registration failed");
             }
 
+            await refreshUser()
+
            
             const safeRedirect = sanitizeRedirect(redirectUrl);
 
             if (safeRedirect) {
-                router.push(`/login?redirect=${safeRedirect}`);
+                router.push(`${safeRedirect}`);
             } else {
-                router.push("/login");
+                router.push("/");
             }
 
             return result;

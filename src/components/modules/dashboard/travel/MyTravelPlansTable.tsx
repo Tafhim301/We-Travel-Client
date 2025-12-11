@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Pencil, Trash2, Users } from "lucide-react";
+import { Eye, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { RequestsDrawer } from "./RequestDrawer";
@@ -23,7 +23,7 @@ export default function MyTravelPlansTable() {
   const [data, setData] = useState<any[]>([]);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
-  const [disable,setDisable] = useState(false)
+
 
   const router = useRouter();
 
@@ -49,33 +49,10 @@ export default function MyTravelPlansTable() {
 
   console.log(data)
 
-  const handleRestrictedAction = () => {
-    toast.warning("You can't modify this plan while members have requested it");
-    setDisable(true)
-  };
 
 
-  const handleDelete = async (planId: string) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/travelPlans/${planId}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      }
-    );
 
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.message);
 
-  
-    setData((prev) => prev.filter((p) => p._id !== planId));
-
-    toast.success("Travel plan deleted");
-  } catch (error: any) {
-    toast.error(error.message || "Failed to delete travel plan");
-  }
-};
 
 
 
@@ -108,8 +85,7 @@ export default function MyTravelPlansTable() {
 
         <TableBody>
           {data.map((plan, index) => {
-            const hasRequests =
-              plan.requestedBy && plan.requestedBy.length > 1;
+           
 
             return (
               <TableRow key={plan._id} >
@@ -147,7 +123,7 @@ export default function MyTravelPlansTable() {
                         }}
                       >
                         <Users className="h-4 w-4 mr-1" />
-                        {plan.requestedBy?.length || 0}
+                        View Requests
                     </Button>
 
                   </div>
@@ -164,35 +140,13 @@ export default function MyTravelPlansTable() {
                       }
                     >
                       <Eye className="h-4 w-4" />
+                      View Details
                     </Button>
 
                     {/* Edit */}
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      disabled={disable}
-                      onClick={
-                        hasRequests
-                          ? handleRestrictedAction
-                          : () =>
-                              router.push(
-                                `/dashboard/update-travel-plan/${plan._id}`
-                              )
-                      }
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+               
 
-                    <Button
-                      size="icon"
-                     
-                      disabled={disable}
-                       className="bg-red-600 hover:bg-red-800 dark:text-accent-foreground"
-              
-                      onClick={hasRequests ? handleRestrictedAction : () => handleDelete(plan._id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                 
                   </div>
                 </TableCell>
               </TableRow>
