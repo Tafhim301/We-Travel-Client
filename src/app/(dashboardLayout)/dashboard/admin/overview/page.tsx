@@ -54,7 +54,7 @@ const Card = ({ children, className = "" }: { children: React.ReactNode; classNa
 
 const StatCard = ({ title, value, subtext, icon: Icon, trend, trendValue, colorClass }: any) => (
     <Card className="p-6 flex items-start justify-between hover:shadow-md transition-shadow">
-        <div className="flex-1 min-w-0"> {/* min-w-0 prevents text overflow issues */}
+        <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1 truncate">{title}</p>
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white truncate">{value}</h3>
             {subtext && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">{subtext}</p>}
