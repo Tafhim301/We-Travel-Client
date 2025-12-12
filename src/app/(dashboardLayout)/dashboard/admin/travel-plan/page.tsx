@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowUpDown, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { ArrowUpDown, ChevronLeft, ChevronRight, Eye, Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+// ... Types and Helper functions remain the same as your code ...
 type TravelPlan = {
   _id: string;
   title: string;
@@ -66,15 +67,15 @@ const Shimmer = ({ className = "" }: { className?: string }) => (
 function PlansTableSkeleton() {
   return (
     <Card className="p-0 overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <Shimmer className="h-6 w-48 rounded" />
-        <div className="flex items-center gap-2">
-          <Shimmer className="h-9 w-48 rounded" />
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Shimmer className="h-9 flex-1 sm:w-48 rounded" />
           <Shimmer className="h-9 w-28 rounded" />
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[1000px]">
           <thead className="bg-slate-50 dark:bg-slate-900/50">
             <tr>
               {Array.from({ length: 9 }).map((_, i) => (
@@ -85,41 +86,15 @@ function PlansTableSkeleton() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {Array.from({ length: 8 }).map((_, r) => (
+            {Array.from({ length: 5 }).map((_, r) => (
               <tr key={r}>
-                <td className="px-6 py-4"><Shimmer className="h-4 w-8 rounded" /></td>
-                <td className="px-6 py-4">
-                  <div className="space-y-2">
-                    <Shimmer className="h-4 w-32 rounded" />
-                    <Shimmer className="h-3 w-48 rounded" />
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <Shimmer className="h-10 w-10 rounded-full" />
-                    <div className="space-y-2">
-                      <Shimmer className="h-4 w-28 rounded" />
-                      <Shimmer className="h-3 w-32 rounded" />
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4"><Shimmer className="h-6 w-20 rounded" /></td>
-                <td className="px-6 py-4"><Shimmer className="h-4 w-28 rounded" /></td>
-                <td className="px-6 py-4"><Shimmer className="h-4 w-24 rounded" /></td>
-                <td className="px-6 py-4"><Shimmer className="h-4 w-24 rounded" /></td>
-                <td className="px-6 py-4"><Shimmer className="h-6 w-20 rounded" /></td>
-                <td className="px-6 py-4"><Shimmer className="h-8 w-24 rounded" /></td>
+                {Array.from({ length: 9 }).map((_, c) => (
+                  <td key={c} className="px-6 py-4"><Shimmer className="h-4 w-full rounded" /></td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-      <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-        <Shimmer className="h-9 w-28 rounded" />
-        <div className="flex items-center gap-2">
-          <Shimmer className="h-9 w-9 rounded" />
-          <Shimmer className="h-9 w-9 rounded" />
-        </div>
       </div>
     </Card>
   );
@@ -137,16 +112,11 @@ const formatCurrency = (value?: number) =>
 
 const travelTypeBadge = (type?: string) => {
   switch (type) {
-    case "FAMILY":
-      return "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-200";
-    case "LEISURE":
-      return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200";
-    case "ADVENTURE":
-      return "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-200";
-    case "SOLO":
-      return "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200";
-    default:
-      return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200";
+    case "FAMILY": return "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-200";
+    case "LEISURE": return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200";
+    case "ADVENTURE": return "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-200";
+    case "SOLO": return "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200";
+    default: return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200";
   }
 };
 
@@ -154,7 +124,7 @@ export default function TravelPlansAdminPage() {
   const [plans, setPlans] = useState<TravelPlan[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [sortKey, setSortKey] = useState<"title" | "startDate" | "createdAt">("title");
@@ -196,11 +166,11 @@ export default function TravelPlansAdminPage() {
         if (!json.success) throw new Error(json.message || "Failed to load travel plans");
         setPlans(json.data);
         setMeta(json.meta);
-        setError("");
+      
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === "AbortError") return;
         const message = err instanceof Error ? err.message : "Network error";
-        setError(message);
+        console.error("Error loading travel plans:", message);
       } finally {
         setLoading(false);
       }
@@ -212,27 +182,33 @@ export default function TravelPlansAdminPage() {
   const totalPages = meta?.totalPage || 1;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 p-6 md:p-8">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 p-4 md:p-8">
+      {/* Header Section */}
+      <div className="flex flex-col gap-6 mb-8">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Manage Travel Plans</h1>
           <p className="text-slate-500 dark:text-slate-400">Search, sort, and review all published plans.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search plans by title"
-            className="w-64"
-          />
+
+        {/* Filters Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex items-center gap-3">
+          <div className="relative lg:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by title..."
+              className="pl-9 h-10"
+            />
+          </div>
           <Select
             value={travelType || "all"}
             onValueChange={(val) => setTravelType(val === "all" ? "" : val)}
           >
-            <SelectTrigger className="h-9 w-44 border border-slate-200 dark:border-slate-800">
+            <SelectTrigger className="h-10 w-full lg:w-44 bg-white dark:bg-slate-900">
               <SelectValue placeholder="All types" />
             </SelectTrigger>
-            <SelectContent align="end">
+            <SelectContent>
               <SelectItem value="all">All types</SelectItem>
               <SelectItem value="FAMILY">Family</SelectItem>
               <SelectItem value="LEISURE">Leisure</SelectItem>
@@ -244,10 +220,10 @@ export default function TravelPlansAdminPage() {
             value={visibility || "all"}
             onValueChange={(val) => setVisibility(val === "all" ? "" : val)}
           >
-            <SelectTrigger className="h-9 w-44 border border-slate-200 dark:border-slate-800">
+            <SelectTrigger className="h-10 w-full lg:w-44 bg-white dark:bg-slate-900">
               <SelectValue placeholder="All visibility" />
             </SelectTrigger>
-            <SelectContent align="end">
+            <SelectContent>
               <SelectItem value="all">All visibility</SelectItem>
               <SelectItem value="true">Visible</SelectItem>
               <SelectItem value="false">Hidden</SelectItem>
@@ -259,20 +235,21 @@ export default function TravelPlansAdminPage() {
       {loading ? (
         <PlansTableSkeleton />
       ) : (
-        <Card className="p-0 ">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <Card className="border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+          {/* Table Toolbar */}
+          <div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => toggleSort("title")} className="gap-2">
-                <ArrowUpDown className="h-4 w-4" /> Title
+              <Button variant="outline" size="sm" onClick={() => toggleSort("title")} className="h-8 gap-2">
+                <ArrowUpDown className="h-3.5 w-3.5" /> Title
               </Button>
-              <Button variant="outline" onClick={() => toggleSort("startDate")} className="gap-2">
-                <ArrowUpDown className="h-4 w-4" /> Start Date
+              <Button variant="outline" size="sm" onClick={() => toggleSort("startDate")} className="h-8 gap-2">
+                <ArrowUpDown className="h-3.5 w-3.5" /> Start Date
               </Button>
             </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-500 dark:text-slate-400">Rows</label>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Rows</span>
               <Select value={String(limit)} onValueChange={(val) => setLimit(Number(val))}>
-                <SelectTrigger className="h-9 w-20 border border-slate-200 dark:border-slate-800">
+                <SelectTrigger className="h-8 w-[70px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent align="end">
@@ -284,106 +261,143 @@ export default function TravelPlansAdminPage() {
             </div>
           </div>
 
-          {error ? (
-            <div className="p-8 text-center text-slate-500 dark:text-slate-400">{error}</div>
-          ) : (
-            <div className="">
-              <Table className="overflow-x-auto">
-                <TableHeader className="bg-slate-50 dark:bg-slate-900/60">
+          {/* TABLE WRAPPER: This handles the horizontal scroll on small screens */}
+          <div className="w-full overflow-x-auto lg:overflow-x-visible">
+            {/* MIN-WIDTH: prevents the table from collapsing/wrapping, forcing a scroll on mobile */}
+            <div className="min-w-[1100px] lg:min-w-full">
+              <Table>
+                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/80">
                   <TableRow>
-                    <TableHead className="px-6">#</TableHead>
-                    <TableHead className="px-6">Plan</TableHead>
-                    <TableHead className="px-6">Host</TableHead>
-                    <TableHead className="px-6">Type</TableHead>
-                    <TableHead className="px-6">Dates</TableHead>
-                    <TableHead className="px-6">Budget</TableHead>
-                    <TableHead className="px-6">Members</TableHead>
-                    <TableHead className="px-6">Visibility</TableHead>
-                    <TableHead className="px-6">Action</TableHead>
+                    <TableHead className="w-12 text-center">#</TableHead>
+                    <TableHead>Plan Details</TableHead>
+                    <TableHead>Host</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Schedule</TableHead>
+                    <TableHead>Budget Range</TableHead>
+                    <TableHead>Members</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="text-sm">
+                <TableBody>
                   {plans.map((plan, idx) => (
-                    <TableRow key={plan._id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800 transition-colors">
-                      <TableCell className="px-6 font-medium text-slate-700 dark:text-slate-200">{(page - 1) * limit + idx + 1}</TableCell>
-                      <TableCell className="px-6">
-                        <div className="space-y-1">
-                          <div className="font-semibold text-slate-900 dark:text-white">{plan.title}</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                    <TableRow key={plan._id} className="group hover:bg-slate-50/80 dark:hover:bg-slate-900/50 transition-colors">
+                      <TableCell className="text-center font-medium text-slate-500">
+                        {(page - 1) * limit + idx + 1}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-1">{plan.title}</span>
+                          <span className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                             {plan.destination?.destination || plan.destination?.city || "Unknown"}
-                            {plan.destination?.country ? ` · ${plan.destination.country}` : ""}
-                          </div>
+                            {plan.destination?.country && ` • ${plan.destination.country}`}
+                          </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-6">
+                      <TableCell>
                         <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarImage src={plan.user?.profileImage?.url || ""} alt={plan.user?.name || "Host"} />
-                            <AvatarFallback>{plan.user?.name?.charAt(0) || "U"}</AvatarFallback>
+                          <Avatar className="h-8 w-8 border border-slate-200 dark:border-slate-700">
+                            <AvatarImage src={plan.user?.profileImage?.url || ""} />
+                            <AvatarFallback className="text-[10px]">{plan.user?.name?.charAt(0) || "U"}</AvatarFallback>
                           </Avatar>
-                          <div>
-                            <div className="font-semibold text-slate-900 dark:text-white">{plan.user?.name || "Unknown"}</div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">{plan.user?.email}</div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium leading-none">{plan.user?.name || "Unknown"}</span>
+                            <span className="text-[11px] text-slate-500 mt-1">{plan.user?.email}</span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-6">
-                        <Badge className={`${travelTypeBadge(plan.travelType)} capitalize`}>
+                      <TableCell>
+                        <Badge variant="secondary" className={`${travelTypeBadge(plan.travelType)} font-medium border-0 px-2 py-0.5`}>
                           {plan.travelType || "N/A"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-6 text-slate-700 dark:text-slate-200">
-                        <div className="space-y-1">
-                          <div>{formatDate(plan.startDate)}</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">to {formatDate(plan.endDate)}</div>
+                      <TableCell className="text-slate-600 dark:text-slate-300">
+                        <div className="text-xs space-y-0.5">
+                          <p className="font-medium text-slate-900 dark:text-slate-200">{formatDate(plan.startDate)}</p>
+                          <p className="text-slate-400 text-[10px] uppercase">To {formatDate(plan.endDate)}</p>
                         </div>
                       </TableCell>
-                      <TableCell className="px-6 text-slate-700 dark:text-slate-200">
+                      <TableCell className="text-sm font-medium">
                         {formatCurrency(plan.budgetRange?.min)} - {formatCurrency(plan.budgetRange?.max)}
                       </TableCell>
-                      <TableCell className="px-6 text-slate-700 dark:text-slate-200">
-                        <div className="space-y-1">
-                          <div className="font-semibold">{plan.approvedMembers?.length ?? 0} / {plan.maxMembers ?? 0} approved</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">Requests: {plan.requestedBy?.length ?? 0}</div>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs font-semibold">
+                             {plan.approvedMembers?.length ?? 0} <span className="text-slate-400 font-normal">/ {plan.maxMembers ?? 0} joined</span>
+                          </span>
+                          <div className="w-24 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                             <div 
+                                className="h-full bg-indigo-500" 
+                                style={{ width: `${Math.min(100, ((plan.approvedMembers?.length || 0) / (plan.maxMembers || 1)) * 100)}%` }}
+                             />
+                          </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-6">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${plan.visibility
-                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200"
-                          : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                      <TableCell>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${plan.visibility
+                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
+                          : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                           }`}>
-                          {plan.visibility ? "Visible" : "Hidden"}
+                          {plan.visibility ? "Public" : "Private"}
                         </span>
                       </TableCell>
-                      <TableCell className="px-6">
-                        <Link href={`/travel-plan/${plan._id}`} className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-300">
-                          <Button className="bg-accent hover:bg-accent/80">
-                            <Eye className="h-4 w-4" /> View
+                      <TableCell className="text-right">
+                        <Link href={`/travel-plan/${plan._id}`}>
+                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/20">
+                            <Eye className="h-4 w-4" />
                           </Button>
                         </Link>
                       </TableCell>
                     </TableRow>
                   ))}
-                  {plans.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={9} className="px-6 py-10 text-center text-slate-500 dark:text-slate-400">No travel plans found.</TableCell>
-                    </TableRow>
-                  )}
                 </TableBody>
               </Table>
             </div>
+          </div>
+
+          {/* Empty State */}
+          {!loading && plans.length === 0 && (
+            <div className="p-12 text-center">
+              <p className="text-slate-500 dark:text-slate-400">No travel plans found matching your criteria.</p>
+            </div>
           )}
 
-          <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-            <div className="text-sm text-slate-600 dark:text-slate-400">
-              Page {page} of {totalPages} • Total {meta?.total ?? plans.length}
+          {/* Pagination Footer */}
+          <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs font-medium text-slate-500 uppercase tracking-tighter">
+              Showing Page {page} of {totalPages} <span className="mx-2 text-slate-300">|</span> Total {meta?.total ?? plans.length} Records
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
-                <ChevronLeft className="h-4 w-4" />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                disabled={page <= 1} 
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="h-8 px-3"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" /> Prev
               </Button>
-              <Button variant="outline" disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>
-                <ChevronRight className="h-4 w-4" />
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(3, totalPages) }).map((_, i) => (
+                    <Button 
+                        key={i} 
+                        variant={page === i + 1 ? "default" : "outline"} 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={() => setPage(i + 1)}
+                    >
+                        {i + 1}
+                    </Button>
+                ))}
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                disabled={page >= totalPages} 
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="h-8 px-3"
+              >
+                Next <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>
