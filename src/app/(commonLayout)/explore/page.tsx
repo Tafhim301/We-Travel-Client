@@ -3,11 +3,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Search, } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { TravelCard } from '@/components/shared/TravelCard'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/shared/Navbar'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuth } from '@/lib/context/AuthContext'
 
 
@@ -25,12 +26,19 @@ export default function Explore() {
   const [sort, setSort] = useState('-createdAt')
   const [page, setPage] = useState(1)
 
+  const sortOptions = [
+    { value: '-createdAt', label: 'Newest' },
+    { value: 'createdAt', label: 'Oldest' },
+    { value: 'startDate', label: 'Upcoming' },
+    { value: '-startDate', label: 'Latest Starts' },
+  ]
+
   const fetchData = async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams()
 
-      if (searchTerm) params.append('search', searchTerm)
+      if (searchTerm) params.append('searchTerm', searchTerm.trim())
       if (selectedType !== 'All') params.append('travelType', selectedType)
       params.append('page', String(page))
       params.append('limit', String(PAGE_SIZE))
@@ -110,28 +118,34 @@ export default function Explore() {
                     setPage(1)
                     setSelectedType(cat)
                   }}
-                  className={`px-4 py-2 rounded-lg text-sm ${
-                    selectedType === cat
+                  className={`px-4 py-2 rounded-lg text-sm ${selectedType === cat
                       ? 'bg-primary text-white'
                       : 'bg-gray-100 dark:bg-slate-800'
-                  }`}
+                    }`}
                 >
                   {cat}
                 </button>
               ))}
             </div>
 
-  
-            <select
+            <Select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="border rounded-lg px-3 py-2 bg-transparent"
+              onValueChange={(value) => {
+                setPage(1)
+                setSort(value)
+              }}
             >
-              <option value="-createdAt">Newest</option>
-              <option value="createdAt">Oldest</option>
-              <option value="startDate">Upcoming</option>
-              <option value="-startDate">Latest Starts</option>
-            </select>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                {sortOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -178,7 +192,7 @@ export default function Explore() {
         )}
       </div>
 
-      
+
     </div>
   )
 }
