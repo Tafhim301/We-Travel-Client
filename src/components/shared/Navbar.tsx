@@ -60,7 +60,7 @@ const navLinks = authenticated && user
      { label: "Admin Dashboard", href: "/dashboard/admin/overview" },
   ] :
   [...baseLinks, 
-    { label: "My Travel Plan", href: "dashboard/my-travel-plans" },
+    { label: "My Travel Plan", href: "/dashboard/my-travel-plans" },
     { label: "Dashboard", href: "/dashboard/overview" },
 
 ]

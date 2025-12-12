@@ -136,7 +136,7 @@ export default function MyTravelPlansTable() {
                  
                       variant="outline"
                       onClick={() =>
-                        router.push(`/travel-plans/${plan._id}`)
+                        router.push(`/travel-plan/${plan._id}`)
                       }
                     >
                       <Eye className="h-4 w-4" />

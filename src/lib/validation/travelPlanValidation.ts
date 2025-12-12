@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const TRAVEL_TYPES = [
-  "SOLO", "FAMILY", "FRIENDS", "COUPLE", 
+  "SOLO", "FAMILY", "FRIENDS", "COUPLE",
   "BUSINESS", "ADVENTURE", "LEISURE", "EXCURSION"
 ] as const;
 
@@ -14,7 +14,7 @@ export const createTravelPlanFormSchema = z.object({
   city: z.string().min(1, "City is required"),
   destination: z.string().min(1, "Specific destination is required"),
 
- 
+
   travelType: z.enum(TRAVEL_TYPES, {
     errorMap: () => ({ message: "Please select a travel type" }),
   }),
@@ -23,13 +23,13 @@ export const createTravelPlanFormSchema = z.object({
     required_error: "Start date is required",
     invalid_type_error: "Start date must be a valid date",
   }),
-  
+
   endDate: z.date({
     required_error: "End date is required",
     invalid_type_error: "End date must be a valid date",
   }),
 
-  
+
   budgetRange: z.object({
     min: z.coerce.number().min(0, "Min budget must be positive"),
     max: z.coerce.number().min(0, "Max budget must be positive"),
@@ -46,9 +46,29 @@ export const createTravelPlanFormSchema = z.object({
 
 
   image: z.any()
-    .refine((files) => files?.length > 0, "Main image is required"),
+    .refine((files) => files?.length > 0, "Main image is required")
+    .refine(
+      (files) => {
+        if (!files || files.length === 0) return true;
+        const file = files[0];
+        return file instanceof File && file.size <= 3 * 1024 * 1024; // 3MB 
+      },
+      { message: "Main image must be less than 3MB" }
+    ),
 
-  demoImages: z.any().optional(),
+  demoImages: z
+    .any()
+    .optional()
+    .refine(
+      (files) => {
+        if (!files || files.length === 0) return true;
+        // Check all demo images are under 3MB
+        return Array.from(files as FileList).every(
+          (file) => file instanceof File && file.size <= 3 * 1024 * 1024
+        );
+      },
+      { message: "All demo images must be less than 3MB" }
+    ),
 });
 
 export type TravelPlanFormValues = z.infer<typeof createTravelPlanFormSchema>;

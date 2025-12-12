@@ -108,7 +108,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const safeRedirect = sanitizeRedirect(redirectUrl);
 
-            router.push(safeRedirect || "/dashboard");
+            // Use window.location for production reliability
+            if (typeof window !== 'undefined') {
+                window.location.href = safeRedirect || "/";
+            } else {
+                router.push(safeRedirect || "/");
+            }
 
             return result;
         } catch (error) {
@@ -126,13 +131,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             await refreshUser()
 
-           
+
             const safeRedirect = sanitizeRedirect(redirectUrl);
 
-            if (safeRedirect) {
-                router.push(`${safeRedirect}`);
+            // Use window.location for production reliability
+            if (typeof window !== 'undefined') {
+                window.location.href = safeRedirect || "/";
             } else {
-                router.push("/");
+                if (safeRedirect) {
+                    router.push(`${safeRedirect}`);
+                } else {
+                    router.push("/");
+                }
             }
 
             return result;
@@ -144,7 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const logout = async () => {
         try {
             await logoutAction();
-        } catch (error) {}
+        } catch (error) { }
 
         setUser(null);
         setAuthenticated(false);

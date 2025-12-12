@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { compressImageFile, MAX_UPLOAD_BYTES } from "@/lib/image";
 
 const updateProfileSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -125,7 +126,10 @@ export function EditProfileDialog({
             formData.append("data", JSON.stringify(payload));
 
             if (data.image instanceof File) {
+                console.log("Uploading image:", data.image.name, "Size:", data.image.size, "bytes");
                 formData.append("profileImage", data.image);
+            } else {
+                console.log("No image to upload or invalid file type");
             }
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/update`, {
@@ -152,14 +156,35 @@ export function EditProfileDialog({
         }
     };
 
-    const handleImageChange = (
+    const handleImageChange = async (
         e: React.ChangeEvent<HTMLInputElement>,
         onChange: (file: File | undefined) => void
     ) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setPreview(URL.createObjectURL(file));
-            onChange(file);
+        if (!file) return;
+
+        console.log("Original image:", file.name, "Size:", file.size, "bytes");
+
+        try {
+            const compressed = await compressImageFile(file, {
+                quality: 0.7,
+                maxWidth: 1200,
+                maxHeight: 1200,
+            });
+
+            console.log("Compressed image:", compressed.name, "Size:", compressed.size, "bytes");
+
+            if (compressed.size > MAX_UPLOAD_BYTES) {
+                toast.error("Image is too large after compression. Please use a smaller image (<3.5MB).");
+                return;
+            }
+
+            setPreview(URL.createObjectURL(compressed));
+            onChange(compressed);
+            console.log("Image set to form field successfully");
+        } catch (err) {
+            console.error("Failed to process image", err);
+            toast.error("Could not process image. Please try a smaller file.");
         }
     };
 
@@ -217,7 +242,7 @@ export function EditProfileDialog({
                                                         type="file"
                                                         accept="image/*"
                                                         className="cursor-pointer file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:transition-colors"
-                                                        onChange={(e) => handleImageChange(e, onChange)}
+                                                        onChange={(e) => { void handleImageChange(e, onChange); }}
                                                         {...field}
                                                         value={undefined}
                                                     />

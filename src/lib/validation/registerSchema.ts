@@ -30,7 +30,17 @@ export const registerSchema = z.object({
 
   confirmPassword: z.string(),
 
-  image: z.any().optional(),
+  image: z
+    .any()
+    .optional()
+    .refine(
+      (file) => {
+        if (!file) return true; // Allow no file
+        if (!(file instanceof File)) return true; // Skip if not a file
+        return file.size <= 3 * 1024 * 1024; // 3MB limit
+      },
+      { message: "Image must be less than 3MB" }
+    ),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],

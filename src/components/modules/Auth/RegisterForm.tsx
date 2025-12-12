@@ -30,7 +30,6 @@ import Link from "next/link";
 export default function RegisterForm() {
     const router = useRouter();
     const [preview, setPreview] = useState<string | null>(null);
-    const [countriesInput, setCountriesInput] = useState<string>("");
     const [fetchedInterests, setFetchedInterests] = useState<
         Array<{ _id: string; name: string }>
     >([]);
@@ -343,26 +342,13 @@ export default function RegisterForm() {
                             <FormControl>
                                 <Input
                                     placeholder="Japan, Turkey, Indonesia..."
-                                    value={countriesInput}
+                                    value={field.value?.join(", ") ?? ""}
                                     onChange={(e) => {
-                                        const inputValue = e.target.value;
-                                        setCountriesInput(inputValue);
-
-                                        // Parse and update form field
-                                        const countries = inputValue
+                                        const arr = e.target.value
                                             .split(",")
                                             .map((v) => v.trim())
                                             .filter(Boolean);
-                                        field.onChange(countries);
-                                    }}
-                                    onBlur={() => {
-                                        // Clean up on blur
-                                        const countries = countriesInput
-                                            .split(",")
-                                            .map((v) => v.trim())
-                                            .filter(Boolean);
-                                        field.onChange(countries);
-                                        setCountriesInput(countries.join(", "));
+                                        field.onChange(arr);
                                     }}
                                 />
                             </FormControl>

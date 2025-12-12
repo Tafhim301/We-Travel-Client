@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -22,7 +21,6 @@ import { useAuth } from "@/lib/context/AuthContext";
 
 
 export default function LoginFields() {
-    const router = useRouter();
     const { login } = useAuth();
 
     const form = useForm<LoginSchema>({
@@ -37,7 +35,7 @@ export default function LoginFields() {
         try {
             await login(data.email, data.password);
             toast.success("Logged in successfully");
-            router.push("/");
+            // Redirect is handled by AuthContext login function
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             toast.error(message || "Login failed");
