@@ -135,7 +135,7 @@ export function TravelCard({ plan, currentUser }: any) {
 
       {/* Actions */}
       <div className="p-5 pt-0 flex gap-2">
-        <Link href={`/travel/${plan._id}`} className="flex-1">
+        <Link href={`/travel-plan/${plan._id}`} className="flex-1">
           <Button variant="outline" className="w-full">
             View Details
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

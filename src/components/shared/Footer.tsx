@@ -5,13 +5,13 @@ import {
   Twitter,
   Instagram,
   Linkedin,
-  Heart,
+
 } from 'lucide-react'
 import Logo from './Logo'
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-100 pt-16 pb-8">
+    <footer className="border-t  dark:border-slate-800 border-gray-100 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
@@ -56,7 +56,7 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Company</h3>
+            <h3 className="font-semibold  text-gray-600 mb-4">Company</h3>
             <ul className="space-y-3">
               <li>
                 <a
@@ -94,7 +94,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Explore</h3>
+            <h3 className="font-semibold text-gray-600 mb-4">Explore</h3>
             <ul className="space-y-3">
               <li>
                 <a
@@ -132,7 +132,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
+            <h3 className="font-semibold text-gray-600 mb-4">Support</h3>
             <ul className="space-y-3">
               <li>
                 <a
