@@ -78,9 +78,9 @@ export default function PublicProfilePage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* 1. Hero / Banner Section */}
+  
       <div className="relative h-48 md:h-64 bg-linear-to-r from-primary/60 to-cyan-700 w-full overflow-hidden">
-        <div className="absolute inset-0 bg-black/10 pattern-grid-lg opacity-20" /> {/* Optional overlay pattern */}
+        <div className="absolute inset-0 bg-black/10 pattern-grid-lg opacity-20" /> 
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6">

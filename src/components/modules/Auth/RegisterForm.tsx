@@ -347,7 +347,7 @@ export default function RegisterForm() {
                                     onChange={(e) => {
                                         const inputValue = e.target.value;
                                         setCountriesInput(inputValue);
-                                        
+
                                         // Parse and update form field
                                         const countries = inputValue
                                             .split(",")

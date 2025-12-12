@@ -128,7 +128,7 @@ export function EditProfileDialog({
                 formData.append("profileImage", data.image);
             }
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${user._id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/update`, {
                 method: "PATCH",
                 credentials: "include",
                 body: formData,
