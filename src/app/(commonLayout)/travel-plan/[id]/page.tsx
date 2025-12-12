@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -24,6 +25,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/lib/context/AuthContext";
+import { toast } from "sonner";
 
 
 
@@ -81,6 +84,37 @@ export default function TravelPlanDetailPage() {
   const [plan, setPlan] = useState<TravelPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const {user : currentUser} = useAuth()
+
+  
+  const handleJoin = async () => {
+    if (!currentUser) {
+      toast.warning('Login required')
+      return
+    }
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-requests/`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            travelPlan: plan?._id,
+            message: 'Excited to join!',
+          }),
+        }
+      )
+
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.message)
+
+      toast.success('Request sent successfully')
+    } catch (err: any) {
+      toast.error(err.message || 'Request failed')
+    }
+  }
 
   const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -118,7 +152,6 @@ export default function TravelPlanDetailPage() {
     );
   }
 
-  // Derived Data
   const destObj = typeof plan.destination === "object" ? plan.destination : {};
   const formattedStart = plan.startDate ? format(new Date(plan.startDate), "MMM dd") : "TBD";
   const formattedEnd = plan.endDate ? format(new Date(plan.endDate), "MMM dd, yyyy") : "TBD";
@@ -130,6 +163,8 @@ export default function TravelPlanDetailPage() {
   const currentMembers = plan.approvedMembers?.length ?? 0;
   const maxMembers = plan.maxMembers ?? 10;
   const percentFull = (currentMembers / maxMembers) * 100;
+
+ 
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 pt-10">
@@ -300,12 +335,7 @@ export default function TravelPlanDetailPage() {
                         {plan.user?.totalReviewsReceived} Reviews
                      </div>
                   </div>
-                  <div className="space-y-3">
-                     <p className="text-muted-foreground text-sm italic">
-                       &ldquo;{plan.user?.bio || `Hi! I'm ${plan.user?.name}, and I love organizing trips.`}&#34;
-                     </p>
-                     <Button variant="outline" size="sm">Contact Host</Button>
-                  </div>
+                 
                 </CardContent>
               </Card>
             </div>
@@ -378,6 +408,7 @@ export default function TravelPlanDetailPage() {
                       <Button 
                         size="lg" 
                         className="w-full text-lg font-semibold shadow-md"
+                        onClick={handleJoin}
                         disabled={currentMembers >= maxMembers}
                       >
                          {currentMembers >= maxMembers ? "Join Waitlist" : "Request to Join"}
