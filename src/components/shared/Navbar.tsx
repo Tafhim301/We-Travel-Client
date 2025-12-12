@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, LogOut, User } from "lucide-react";
+import { Menu, LogOut, User, UserRound } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -61,7 +61,6 @@ const navLinks = authenticated && user
   ] :
   [...baseLinks, 
     { label: "My Travel Plan", href: "dashboard/my-travel-plans" },
-    { label: "View Profile", href: `/profile/${user._id}`},
     { label: "Dashboard", href: "/dashboard/overview" },
 
 ]
@@ -131,6 +130,15 @@ const navLinks = authenticated && user
                 </DropdownMenuLabel>
 
                 <DropdownMenuSeparator />
+
+               <DropdownMenuItem
+              
+              
+                >
+                 <UserRound className="h-4 w-4 mr-2" />
+                  <Link href={`/profile/${user._id}`}>View Profile</Link>
+          
+                </DropdownMenuItem>
 
         
 
