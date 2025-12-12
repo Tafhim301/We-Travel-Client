@@ -57,8 +57,8 @@ const navLinks = authenticated && user
   ? user.role === "ADMIN" ? 
   [...baseLinks, { label: "Admin Dashboard", href: "/dashboard/admin/overview" }] :
   [...baseLinks, 
-  { label: "Profile", href: "/dashboard/profile" },
-  { label: "My Travel Plan", href: "dashboard/my-travel-plans" },
+    { label: "My Travel Plan", href: "dashboard/my-travel-plans" },
+    { label: "Dashboard", href: "/dashboard/overview" },
 
 ]
   : baseLinks;
