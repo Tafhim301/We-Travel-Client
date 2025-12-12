@@ -55,9 +55,13 @@ export function Navbar() {
 
 const navLinks = authenticated && user 
   ? user.role === "ADMIN" ? 
-  [...baseLinks, { label: "Admin Dashboard", href: "/dashboard/admin/overview" }] :
+  [...baseLinks,
+     { label: "View Profile", href: `/profile/${user._id}` },
+     { label: "Admin Dashboard", href: "/dashboard/admin/overview" },
+  ] :
   [...baseLinks, 
     { label: "My Travel Plan", href: "dashboard/my-travel-plans" },
+    { label: "View Profile", href: `/profile/${user._id}`},
     { label: "Dashboard", href: "/dashboard/overview" },
 
 ]
@@ -128,9 +132,7 @@ const navLinks = authenticated && user
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard"><User className="h-4 w-4 mr-2" />View Dashboard</Link>
-                </DropdownMenuItem>
+        
 
                 <DropdownMenuSeparator />
 

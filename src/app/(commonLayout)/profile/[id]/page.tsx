@@ -3,26 +3,29 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { 
-  BadgeCheck, 
-  MapPin, 
-  Plane, 
-  Star, 
-  CalendarDays, 
+import {
+  BadgeCheck,
+  MapPin,
+  Plane,
+  Star,
+  CalendarDays,
   MessageSquareQuote,
   LayoutGrid,
   Globe2,
-  UserCheck
+  UserCheck,
+  Pencil
 } from "lucide-react";
 
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { TravelCard } from "@/components/shared/TravelCard";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 import { useAuth } from "@/lib/context/AuthContext";
+import { EditProfileDialog } from "@/components/modules/Profile/EditProfileDialog";
 
 interface IUserProfile {
   user: any;
@@ -49,14 +52,21 @@ export default function PublicProfilePage() {
   const { id } = useParams();
   const [data, setData] = useState<IUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
   const { user: currentUser } = useAuth();
 
-  useEffect(() => {
+  const fetchProfileData = () => {
+    setLoading(true);
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${id}`)
       .then(res => res.json())
       .then(res => setData(res.data))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchProfileData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (loading) return <ProfileSkeleton />;
@@ -64,6 +74,7 @@ export default function PublicProfilePage() {
 
   const { user, travelPlans } = data;
   const isPremium = user?.subscription?.isPremium;
+  const isOwner = currentUser?._id === user?._id;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -74,7 +85,7 @@ export default function PublicProfilePage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="relative -mt-20 md:-mt-24 mb-8 flex flex-col md:flex-row items-start gap-6">
-          
+
           {/* Profile Image with Ring */}
           <div className="relative shrink-0">
             <div className="relative rounded-full p-1.5 bg-background shadow-xl">
@@ -93,7 +104,7 @@ export default function PublicProfilePage() {
           {/* User Info Block */}
           <div className="pt-2 md:pt-24 flex-1 w-full">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-3">
                   <h1 className="text-3xl font-bold tracking-tight text-foreground">{user.name}</h1>
                   {isPremium && (
@@ -106,6 +117,18 @@ export default function PublicProfilePage() {
                   {user.bio || "No bio provided."}
                 </p>
               </div>
+
+              {/* Edit Profile Button - Only for owner */}
+              {isOwner && (
+                <Button
+                  onClick={() => setEditDialogOpen(true)}
+                  size="lg"
+                  className="gap-2 shadow-md hover:shadow-lg transition-shadow"
+                >
+                  <Pencil className="w-4 h-4" />
+                  Edit Profile
+                </Button>
+              )}
             </div>
 
             {/* Meta Data Row */}
@@ -137,6 +160,27 @@ export default function PublicProfilePage() {
                 </Badge>
               ))}
             </div>
+
+            {/* Visited Countries */}
+            {user.visitedCountries && user.visitedCountries.length > 0 && (
+              <div className="mt-6 p-4 rounded-lg border bg-muted/30">
+                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Globe2 className="w-4 h-4 text-blue-500" />
+                  Countries Visited ({user.visitedCountries.length})
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {user.visitedCountries.map((country: string, idx: number) => (
+                    <Badge
+                      key={idx}
+                      variant="outline"
+                      className="px-3 py-1.5 font-medium bg-background hover:bg-muted transition-colors"
+                    >
+                      🌍 {country}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -152,14 +196,14 @@ export default function PublicProfilePage() {
 
         {/* 3. Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* Left Column: Travel Plans (Takes up 2 cols on large screens) */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-2 mb-2">
               <LayoutGrid className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold">Travel Plans</h2>
             </div>
-            
+
             {travelPlans.length === 0 ? (
               <div className="text-center py-12 bg-muted/20 rounded-xl border border-dashed">
                 <Plane className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
@@ -168,7 +212,7 @@ export default function PublicProfilePage() {
             ) : (
               <div className="grid sm:grid-cols-2 gap-6">
                 {travelPlans.map(plan => (
-                  <TravelCard key={plan._id} plan={plan} currentUser={currentUser}/>
+                  <TravelCard key={plan._id} plan={plan} currentUser={currentUser} />
                 ))}
               </div>
             )}
@@ -193,7 +237,7 @@ export default function PublicProfilePage() {
                         <AvatarImage src={review.reviewer?.profileImage?.url} />
                         <AvatarFallback>{review.reviewer?.name?.charAt(0) || "U"}</AvatarFallback>
                       </Avatar>
-                      
+
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
                           <h4 className="font-semibold text-sm">{review.reviewer?.name || "Unknown User"}</h4>
@@ -217,6 +261,16 @@ export default function PublicProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Dialog */}
+      {isOwner && (
+        <EditProfileDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          user={user}
+          onSuccess={fetchProfileData}
+        />
+      )}
     </div>
   );
 }
