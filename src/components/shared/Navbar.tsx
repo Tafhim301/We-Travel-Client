@@ -55,7 +55,7 @@ export function Navbar() {
 
 const navLinks = authenticated && user 
   ? user.role === "ADMIN" ? 
-  [...baseLinks, { label: "AdminDashboard", href: "/dashboard/admin/overview" }] :
+  [...baseLinks, { label: "Admin Dashboard", href: "/dashboard/admin/overview" }] :
   [...baseLinks, 
   { label: "Profile", href: "/dashboard/profile" },
   { label: "My Travel Plan", href: "dashboard/my-travel-plans" },

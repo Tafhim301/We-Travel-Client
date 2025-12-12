@@ -43,7 +43,7 @@ export default function Hero() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               </Link>
-              <Link href="/how-it-works">
+              <Link href="/about">
                 <Button
                   variant="outline"
                   size="lg"

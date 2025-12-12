@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 import { TravelCard } from '@/components/shared/TravelCard'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/shared/Navbar'
-import { Footer } from '@/components/shared/Footer'
 import { useAuth } from '@/lib/context/AuthContext'
 
 
@@ -179,7 +178,7 @@ export default function Explore() {
         )}
       </div>
 
-      <Footer />
+      
     </div>
   )
 }
