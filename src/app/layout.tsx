@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Oswald } from "next/font/google";
 import { AuthProvider } from "@/lib/context/AuthContext";
+import { Suspense } from "react";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "sonner";
 
@@ -25,18 +26,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${oswald.variable} font-sans`}>
-        <AuthProvider>
-         
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster position="top-right" richColors />
-          </ThemeProvider>
-        </AuthProvider>
+        <Suspense fallback={<div />}>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster position="top-right" richColors />
+            </ThemeProvider>
+          </AuthProvider>
+        </Suspense>
       </body>
     </html>
   );

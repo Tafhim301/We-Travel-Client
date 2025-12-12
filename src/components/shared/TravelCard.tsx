@@ -10,7 +10,7 @@ import {
   Users,
   Calendar,
   ArrowRight,
-  BadgeCheck, // Import the verified icon
+  BadgeCheck, 
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -20,7 +20,7 @@ import { format } from 'date-fns'
 export function TravelCard({ plan, currentUser }: any) {
   const isHost = currentUser?._id === plan.user._id
   const isRated = plan.user.totalReviewsReceived > 0
-  const isPremium = plan.user.subscription.isPremium
+  const isPremium = plan.user.subscription?.isPremium || false
 
   const handleJoin = async () => {
     if (!currentUser) {
