@@ -3,14 +3,25 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { BadgeCheck, MapPin, Plane, Star } from "lucide-react";
-import Image from "next/image";
+import { 
+  BadgeCheck, 
+  MapPin, 
+  Plane, 
+  Star, 
+  CalendarDays, 
+  MessageSquareQuote,
+  LayoutGrid,
+  Globe2,
+  UserCheck
+} from "lucide-react";
+
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { TravelCard } from "@/components/shared/TravelCard";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
-import ProfileStat from "@/components/ui/profileStat";
 import { useAuth } from "@/lib/context/AuthContext";
 
 interface IUserProfile {
@@ -18,11 +29,28 @@ interface IUserProfile {
   travelPlans: any[];
 }
 
+
+const StatCard = ({ icon: Icon, label, value, subtext }: { icon: any, label: string, value: string | number, subtext?: string }) => (
+  <Card className="border-none shadow-sm bg-secondary/30">
+    <CardContent className="p-4 flex items-center gap-4">
+      <div className="p-3 rounded-full bg-background shadow-sm">
+        <Icon className="w-5 h-5 text-primary" />
+      </div>
+      <div>
+        <p className="text-2xl font-bold leading-none">{value}</p>
+        <p className="text-sm text-muted-foreground font-medium mt-1">{label}</p>
+        {subtext && <p className="text-xs text-muted-foreground/60">{subtext}</p>}
+      </div>
+    </CardContent>
+  </Card>
+);
+
 export default function PublicProfilePage() {
   const { id } = useParams();
   const [data, setData] = useState<IUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  console.log(data)
+  
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${id}`)
@@ -30,7 +58,6 @@ export default function PublicProfilePage() {
       .then(res => setData(res.data))
       .finally(() => setLoading(false));
   }, [id]);
-  const {user : currentUser} = useAuth()
 
   if (loading) return <ProfileSkeleton />;
   if (!data) return null;
@@ -38,123 +65,158 @@ export default function PublicProfilePage() {
   const { user, travelPlans } = data;
   const isPremium = user?.subscription?.isPremium;
 
-  
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 space-y-10 mt-30">
-     
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-        <div className="relative">
-          <Image
-            src={user.profileImage?.url}
-            alt={user.name}
-            width={120}
-            height={120}
-            className="rounded-full object-cover border w-24 h-24"
-          />
+    <div className="min-h-screen bg-background pb-20">
+      {/* 1. Hero / Banner Section */}
+      <div className="relative h-48 md:h-64 bg-linear-to-r from-primary/60 to-cyan-700 w-full overflow-hidden">
+        <div className="absolute inset-0 bg-black/10 pattern-grid-lg opacity-20" /> {/* Optional overlay pattern */}
+      </div>
 
-          {isPremium && (
-            <div className="absolute bottom-1 right-1 bg-primary rounded-full p-1">
-              <BadgeCheck className="h-5 w-5 text-white" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="relative -mt-20 md:-mt-24 mb-8 flex flex-col md:flex-row items-start gap-6">
+          
+          {/* Profile Image with Ring */}
+          <div className="relative shrink-0">
+            <div className="relative rounded-full p-1.5 bg-background shadow-xl">
+              <Avatar className="w-32 h-32 md:w-40 md:h-40 border-2 border-background">
+                <AvatarImage src={user.profileImage?.url} className="object-cover" />
+                <AvatarFallback className="text-4xl bg-muted">{user.name?.charAt(0)}</AvatarFallback>
+              </Avatar>
             </div>
-          )}
-        </div>
-
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">{user.name}</h1>
             {isPremium && (
-              <Badge className="bg-primary text-primary-foreground">
-                Verified
-              </Badge>
+              <div className="absolute bottom-4 right-4 bg-primary text-white rounded-full p-1.5 shadow-md border-2 border-background" title="Premium Member">
+                <BadgeCheck className="h-6 w-6" />
+              </div>
             )}
           </div>
 
-          <p className="text-muted-foreground mt-1">{user.bio}</p>
-
-          <div className="flex flex-wrap gap-4 mt-4 text-sm text-muted-foreground">
-            <div><div><span className="flex flex-row gap-1 items-center"> <MapPin className="text-red-600"></MapPin> {user.currentLocation}</span></div></div>
-            <div><div><span className="flex flex-row gap-1 items-center"><Plane className="text-blue-600" /> Visited {user.visitedCountries.length} countries</span></div></div>
-            <div><div><span className="flex flex-row gap-1 items-center"><Star className="text-yellow-400"></Star> {!user.averageRating ? "Not Rated Yet" : user.averageRating || 0} </span></div></div>
-          </div>
-        </div>
-         
-      </div>
-          <div>
-        <h2 className="text-lg font-semibold mb-3">Interests</h2>
-        <div className="flex flex-wrap gap-2">
-          {user.interests.map((i: { name: string , _id : string}) => (
-            <Badge key={i._id} variant="secondary">
-              {i.name}
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      <Separator />
-
-   
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <ProfileStat label="Trips" value={travelPlans.length} />
-        <ProfileStat label="Reviews" value={user.totalReviewsReceived} />
-        <ProfileStat label="Rating" value={user.averageRating || "0.0"} />
-        <ProfileStat label="Status" value={user.isActive} />
-      </div>
-
-     
-  
-
-      <div>
-        <h2 className="text-lg font-semibold mb-4">
-          Travel Plans by {user.name}
-        </h2>
-
-        {travelPlans.length === 0 ? (
-          <p className="text-muted-foreground">No travel plans yet.</p>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {travelPlans.map(plan => (
-              <TravelCard key={plan._id} plan={plan} currentUser={currentUser}/>
-            ))}
-          </div>
-        )}
-      </div>
-
-
-
-    {user.reviewsReceived.length > 0 &&
-     <div>
-        <h2 className="text-lg font-semibold mb-4">Reviews</h2>
-
-        {user.reviewsReceived.length === 0 ? (
-          <p className="text-muted-foreground">
-            No reviews yet.
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {user.reviewsReceived.map((review: any) => (
-              <div
-                key={review._id}
-                className="p-4 border rounded-xl bg-card"
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-medium">{review.reviewer.name}</p>
-                  <span className="text-sm text-muted-foreground">
-                    ⭐ {review.rating}
-                  </span>
+          {/* User Info Block */}
+          <div className="pt-2 md:pt-24 flex-1 w-full">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground">{user.name}</h1>
+                  {isPremium && (
+                    <Badge variant="default" className="bg-blue-600 hover:bg-blue-700">
+                      Verified Traveler
+                    </Badge>
+                  )}
                 </div>
-                <p className="text-muted-foreground">{review.comment}</p>
+                <p className="text-base text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+                  {user.bio || "No bio provided."}
+                </p>
               </div>
-            ))}
+            </div>
+
+            {/* Meta Data Row */}
+            <div className="flex flex-wrap gap-4 md:gap-8 mt-6 text-sm font-medium text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-red-500" />
+                {user.currentLocation || "Location N/A"}
+              </div>
+              <div className="flex items-center gap-2">
+                <Globe2 className="w-4 h-4 text-blue-500" />
+                Visited {user.visitedCountries.length} countries
+              </div>
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                {user.averageRating ? Number(user.averageRating).toFixed(1) : "New"} Rating
+                <span className="text-muted-foreground/60 font-normal">({user.totalReviewsReceived} reviews)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-green-500" />
+                {user.isActive ? "Active Now" : "Offline"}
+              </div>
+            </div>
+
+            {/* Interests Tags */}
+            <div className="flex flex-wrap gap-2 mt-5">
+              {user.interests?.map((i: any) => (
+                <Badge key={i._id} variant="secondary" className="px-3 py-1 bg-secondary/50 hover:bg-secondary">
+                  #{i.name}
+                </Badge>
+              ))}
+            </div>
           </div>
-        )}
-      </div>}
+        </div>
+
+        <Separator className="my-8" />
+
+        {/* 2. Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <StatCard icon={Plane} label="Trips Hosted" value={travelPlans.length} />
+          <StatCard icon={MessageSquareQuote} label="Reviews" value={user.totalReviewsReceived} />
+          <StatCard icon={Star} label="Avg Rating" value={user.averageRating || "N/A"} />
+          <StatCard icon={CalendarDays} label="Joined" value={new Date().getFullYear()} subtext="Member since" />
+        </div>
+
+        {/* 3. Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          
+          {/* Left Column: Travel Plans (Takes up 2 cols on large screens) */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <LayoutGrid className="w-5 h-5 text-primary" />
+              <h2 className="text-xl font-bold">Travel Plans</h2>
+            </div>
+            
+            {travelPlans.length === 0 ? (
+              <div className="text-center py-12 bg-muted/20 rounded-xl border border-dashed">
+                <Plane className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                <p className="text-muted-foreground">No active travel plans yet.</p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-6">
+                {travelPlans.map(plan => (
+                  <TravelCard key={plan._id} plan={plan} currentUser={currentUser}/>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Reviews */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageSquareQuote className="w-5 h-5 text-primary" />
+              <h2 className="text-xl font-bold">Reviews ({user.reviewsReceived.length})</h2>
+            </div>
+
+            {user.reviewsReceived.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">No reviews received yet.</p>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {user.reviewsReceived.map((review: any) => (
+                  <Card key={review._id} className="overflow-hidden">
+                    <CardHeader className="p-4 pb-2 flex flex-row items-start gap-3 space-y-0">
+
+                      <Avatar className="w-10 h-10 border">
+                        <AvatarImage src={review.reviewer?.profileImage?.url} />
+                        <AvatarFallback>{review.reviewer?.name?.charAt(0) || "U"}</AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <h4 className="font-semibold text-sm">{review.reviewer?.name || "Unknown User"}</h4>
+                          <div className="flex items-center bg-yellow-50 dark:bg-yellow-900/20 px-1.5 py-0.5 rounded text-xs text-yellow-700 dark:text-yellow-400 font-bold">
+                            <Star className="w-3 h-3 mr-1 fill-current" />
+                            {review.rating}
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">Verified Traveler</p>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-2">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        &quot;{review.comment}&quot;
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-
-
-
-
-
-
