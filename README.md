@@ -303,7 +303,7 @@ npm run lint
 
 ## 📹 Video Summary & Demo
 
-<div align="center">
+<div align="">
 
 ### Project Walkthrough & Feature Demo
 
@@ -320,17 +320,7 @@ Key Features Demonstrated:
 
 </div>
 
----
 
-## Project Statistics
-
-| Metric | Value |
-|--------|-------|
-| Total Pages | 18+ |
-| Total Components | 40+ |
-| TypeScript Files | 81 |
-| Skeleton Loaders | 6 |
-| Lines of Code | 5,000+ |
 
 ---
 
@@ -352,11 +342,11 @@ Key Features Demonstrated:
 
 ---
 
-<div align="center">
+<div align="">
 
 ### 🙏 Thank You for Using We-Travel!
 
-Made with ❤️ by Tafhimul Islam
+Made by Tafhimul Islam
 
 [⬆ Back to top](#-we-travel-frontend)
 
