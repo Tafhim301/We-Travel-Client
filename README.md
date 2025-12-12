@@ -17,6 +17,36 @@
 
 **We-Travel** is a travel planning social platform that enables users to explore, create, and join travel plans with other travelers.
 
+---
+
+## 📸 Screenshots
+
+### Hero & Landing Page
+<div align="center">
+  <img src="./public/Images/Hero.png" alt="Hero Page" width="800" />
+  <p><em>Beautiful landing page with hero section and featured travel plans</em></p>
+</div>
+
+### Explore & Browse
+<div align="center">
+  <img src="./public/Images/explore.png" alt="Explore Page" width="800" />
+  <p><em>Discover travel plans from the community with filtering and search</em></p>
+</div>
+
+### User Dashboard
+<div align="center">
+  <img src="./public/Images/dashboard.png" alt="Dashboard" width="800" />
+  <p><em>Personal dashboard with travel statistics, activity, and subscriptions</em></p>
+</div>
+
+### About Page
+<div align="center">
+  <img src="./public/Images/about.png" alt="About" width="800" />
+  <p><em>Learn more about We-Travel platform and our mission</em></p>
+</div>
+
+---
+
 ## 🎯 Key Features
 
 | Feature | Description |
