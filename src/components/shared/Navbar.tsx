@@ -129,7 +129,7 @@ const navLinks = authenticated && user
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/profile"><User className="h-4 w-4 mr-2" />View Profile</Link>
+                  <Link href="/dashboard"><User className="h-4 w-4 mr-2" />View Dashboard</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />

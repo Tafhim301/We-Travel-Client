@@ -10,6 +10,7 @@ import {
   Users,
   Calendar,
   ArrowRight,
+  BadgeCheck, // Import the verified icon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -19,6 +20,7 @@ import { format } from 'date-fns'
 export function TravelCard({ plan, currentUser }: any) {
   const isHost = currentUser?._id === plan.user._id
   const isRated = plan.user.totalReviewsReceived > 0
+  const isPremium = plan.user.subscription.isPremium
 
   const handleJoin = async () => {
     if (!currentUser) {
@@ -111,13 +113,20 @@ export function TravelCard({ plan, currentUser }: any) {
           href={`/profile/${plan.user._id}`}
           className="flex items-center gap-3 pt-4 border-t mt-auto"
         >
-          <Image
-            src={plan.user.profileImage?.url}
-            alt={"Profile Image"}
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-full border-2 border-primary object-cover"
-          />
+
+          <div className="relative">
+            <Image
+              src={plan.user.profileImage?.url}
+              alt={"Profile Image"}
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-full border-2 border-primary object-cover"
+            />
+            {isPremium && (
+              <BadgeCheck className="absolute -bottom-1 -right-1 h-4 w-4 fill-primary text-white" />
+            )}
+          </div>
+
           <div className="flex-1">
             <p className="text-xs text-muted-foreground">Hosted by</p>
             <p className="text-sm font-medium leading-none flex items-center gap-1">
@@ -133,7 +142,6 @@ export function TravelCard({ plan, currentUser }: any) {
         </Link>
       </div>
 
-      {/* Actions */}
       <div className="p-5 pt-0 flex gap-2">
         <Link href={`/travel-plan/${plan._id}`} className="flex-1">
           <Button variant="outline" className="w-full">

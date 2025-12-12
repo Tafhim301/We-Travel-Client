@@ -6,8 +6,7 @@ import {
   Users,
   Globe,
 
-  UserRound,
-  Settings,
+
   CalendarPlus,
   CalendarRange,
   CalendarClock,
@@ -33,17 +32,6 @@ export function formatCurrency(amount: number): string {
   }).format(amount)
 }
 
-export const commonSidebarItems = {
-  section: "Settings",
-  icon: Settings,
-  items: [
-    {
-      title: "Profile",
-      url: "/dashboard/profile",
-      icon: UserRound,
-    },
-  ],
-};
 
 export const AdminSidebarItems = [
   {
@@ -68,7 +56,7 @@ export const AdminSidebarItems = [
     ],
   },
 
-  commonSidebarItems,
+
 ];
 
 export const UserSidebarItems = [
@@ -88,7 +76,7 @@ export const UserSidebarItems = [
     ],
   },
 
-  commonSidebarItems,
+
 ];
 
 
